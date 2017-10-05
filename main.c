@@ -11,17 +11,19 @@
 
 char* invertir(const char* cadena, const size_t tamanio){
     char* inverso = (char*)calloc(tamanio + 1, sizeof(char));
+    if (!inverso){
+       return NULL;
+    }
     for (unsigned int i = 1; i<tamanio + 1; ++i){
          strncat(inverso,cadena + (tamanio-i), 1);
     }
     return inverso;
 }
 
-bool esCapicua(const char* cadena){
+int esCapicua(const char* cadena){
     if (strlen(cadena) == 0){
-        return false;
+        return 0;
     }
-    bool capicua = false;
     char minuscula[strlen(cadena) + 1];
     memset(minuscula, 0, sizeof(minuscula));
      /**Convierto a minuscula**/
@@ -29,9 +31,16 @@ bool esCapicua(const char* cadena){
         minuscula[i] = tolower(cadena[i]);
     }
     char* inversa = invertir(minuscula, strlen(cadena));
-    capicua =  (strcmp(minuscula, inversa) == 0);
+    if (!inversa){
+        free(inversa);
+        return -1;//Error de calloc
+    }
+    if (strcmp(minuscula, inversa) == 0){
+        free(inversa);
+        return 1;
+    }
     free(inversa);
-    return capicua;
+    return 0;
 }
 
 int main(int argc, char* argv[])
@@ -43,6 +52,7 @@ int main(int argc, char* argv[])
      bool salidaPorArch = false;
      bool commandEntered = false;
      bool validCommand = false;
+     bool abort = false;
      for (int i = 1; i < argc; ++i){
         if (((!strcmp(argv[i],"-V"))) || ((!strcmp(argv[i],"--version")))){
             printf("TP0 Organizacion de Computadoras version \"1.0.0\"\
@@ -79,6 +89,12 @@ Examples:\n\
                 salidaPorArch = true;
                 validCommand = true;
                 output_file = fopen(argv[i+1],"w");
+                if (!output_file){
+                    abort = true;
+                    if (fclose(input_file) == EOF){
+                        abort = true;
+                    }
+                }
             }
         }
         commandEntered = true;
@@ -111,7 +127,7 @@ Examples:\n\
         letra = fgetc(input_file);
     }
 
-    while ((entradaPorArch && letra!=EOF) ||
+    while ((entradaPorArch && letra!=EOF && !abort) ||
             (!entradaPorArch && i<strlen(input_string)+1)) {
         if(isdigit(letra) || (tolower(letra)>='a' && tolower(letra)<='z')){
             buffer[index_palabra]=letra;
@@ -129,14 +145,18 @@ Examples:\n\
         }
         else
         {
-			if(esCapicua(buffer)){
+			if(esCapicua(buffer) == 1){
                 if (salidaPorArch){
                     fprintf(output_file,"%s\n",buffer);
                 }
                 else{
                     printf("%s\n",buffer);
                 }
+			} else if (esCapicua(buffer) == -1){
+                entradaPorArch = false;
+                fclose(input_file);
 			}
+
 
             index_palabra = 0;
             memset(buffer, 0, strlen(buffer));
@@ -155,11 +175,18 @@ Examples:\n\
     free(buffer); /**libero ultimo buffer**/
 
     if (entradaPorArch){
-        fclose(input_file);
+        if (fclose(input_file) == EOF){
+            abort = true;
+        }
     }
 
     if (salidaPorArch){
-        fclose(output_file);
+        if (fclose(output_file) == EOF){
+           abort = true;
+        }
+    }
+    if (abort){
+        return -1;
     }
     return 0;
 }
