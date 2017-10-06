@@ -94,16 +94,48 @@ int main(int argc, char* argv[])
         }
         
         if(inputByFile){
-            //leer de archivo
+            int ifd;
+            ifd = fileno(input_file);
+            if(ifd == -1){
+                THROW (ERROR_IN_PROGRAM_EXCEPTION);
+            }
+            
+            int ofd;
+            ofd = fileno(output_file);
+            
+            if(ofd == -1){
+                THROW (ERROR_IN_PROGRAM_EXCEPTION);
+            }
+            
+            palindrome(ifd, input_buffer_size, 
+                        ofd, output_buffer_size);
         } else {
-            //leer de pantalla
+            int fdin;
+            fdin = fileno(stdin);
+            if(fdin == -1){
+                THROW (ERROR_IN_PROGRAM_EXCEPTION);
+            }
+            
+            if (outputByFile){
+                int ofd;
+                ofd = fileno(output_file);
+
+                if(ofd == -1){
+                    THROW (ERROR_IN_PROGRAM_EXCEPTION);
+                }
+                palindrome(fdin, input_buffer_size, 
+                            ofd, output_buffer_size);
+            } else {
+                int fdout;
+                fdout = fileno(stdout);
+
+                if(fdout == -1){
+                    THROW (ERROR_IN_PROGRAM_EXCEPTION);
+                }
+                palindrome(fdin, input_buffer_size, 
+                            fdout, output_buffer_size);
+            }
         }
-        
-     /*
-     *
-     * CODIGO DE MIPS32
-     * 
-     */
         
         if (inputByFile){
             THROW  (ERROR_IN_PROGRAM_EXCEPTION);
