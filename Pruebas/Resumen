@@ -1,0 +1,8 @@
+En esta carpeta hay un programita en c que simplemente pone a prueba
+la lectura de un archivo, la carga del contenido del mismo en un buffer de tamanio
+fijo. Y el uso de la funcion getch . Finalmente se escribe ese unico byte que lee
+getch del buffer de tamanio fijo (y que lo coloca en otro de tamanio variable)
+en un archivo output.txt
+
+la funcion getch esta hecha totalmente en mips, con lo cual el programa en c
+le pasa el control total a mips cuando se invoca la funcion getch
