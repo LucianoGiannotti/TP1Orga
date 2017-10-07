@@ -1,0 +1,1 @@
+gcc mymalloc.S main.c -o tp
