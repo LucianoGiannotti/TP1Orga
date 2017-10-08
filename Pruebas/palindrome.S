@@ -5,8 +5,8 @@
 	.globl	palindrome
 	.ent	palindrome
 
-palindrome:
-	.frame	$fp,48, ra		# vars= 8, regs= 3/0, args= 16, extra= 8
+palindrome: #por ahora lee el archivo en un buffer y lo imprime en otro
+	.frame	$fp,48, ra		
 	.mask	0xd0000000,-8
 	.fmask	0x00000000,0
 	.set	noreorder

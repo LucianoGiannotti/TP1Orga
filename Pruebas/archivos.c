@@ -7,20 +7,32 @@
 
 #define INPUT_BUFF_SIZE 10
 #define OUTPUT_BUFF_SIZE 5
-extern void getch(char* src, char** dest, size_t indice);
+extern void putch(char* src, char** dest, size_t indice);
+extern char getch(char* src,size_t indice);
+/*char getch(char* src,size_t indice){
+	char res = (char) src[indice];
+	return res;
+} */
+
 
 /**Funcion de mips a la cual le cedo el control**/
 void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 	unsigned int indice = 1;
 	//Cargo el buffer de entrada
-	char* buffer = (char*)mymalloc(ibytes);
-	read(ifd,buffer,ibytes);
+	char* ibuffer = (char*)mymalloc(ibytes);
+	char* obuffer = (char*)mymalloc(obytes);
+	read(ifd,ibuffer,ibytes);
 	//Paso 1 byte a un buffer interno
 	char* buffer_interno = (char*)mymalloc(20);
-	//pasa un byte desde buffer a buffer_interno
-	getch(buffer, &buffer_interno, indice);
+	//pasa un byte desde ibuffer a buffer_interno
+	putch(ibuffer, &buffer_interno, indice);
+	//paso un byte desde buffer_interno a obuffer
+	putch(buffer_interno, &obuffer, indice);
+	char a = 's';
+	a = getch(ibuffer,indice); //devuelve el caracter del indice indicado
+	printf("%c\n",a);
 	++indice;
-	write(ofd,buffer_interno,1);
+	write(ofd,obuffer,1);
 }
 
 int main(int argc, char* argv[]){
