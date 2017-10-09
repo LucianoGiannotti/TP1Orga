@@ -10,8 +10,37 @@
 extern void putch(char* src, char** dest, size_t indice);
 extern char getch(char* src,size_t indice);
 /**Funcion de mips a la cual le cedo el control**/
-extern void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes);
+//extern void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes);
 
+
+char* initBufferInterno(size_t size){
+	char* buffer = (char*)mymalloc(size);
+	memset(buffer, size,0);
+	return (buffer);
+}
+
+/**Funcion de mips a la cual le cedo el control**/
+void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
+	int indice = 0;
+	//Cargo el buffer de entrada
+	char* ibuffer = (char*)mymalloc(ibytes);
+	char* obuffer = (char*)mymalloc(obytes);
+	char a = 1;
+	while (read(ifd, ibuffer, ibytes) > 0){
+		while (indice < ibytes){
+			char** buff_interno = /*REFERENCIA A*/initBufferInterno(ibytes);
+			//if (palabraCapicua(buff_interno) == 1){
+			   //llenarbuffext
+			//}
+			++indice;
+		}
+		indice = 0;
+	}
+	//write(ofd, &a, sizeof(char));
+	myfree(ibuffer);
+	myfree(obuffer);
+}
+/*
 char* invertir(const char* cadena, const size_t tamanio){
     char* inverso = (char*)calloc(tamanio + 1, sizeof(char));
     if (!inverso){
@@ -23,27 +52,71 @@ char* invertir(const char* cadena, const size_t tamanio){
     return inverso;
 }
 
-
-char* initBufferInterno(size_t size){
-	char* buffer = (char*)mymalloc(size);
-	memset(buffer, size,0);
+int palabraCapicua(const char** cadena){
+    int indice = 0;
+    return llenarBufferInternoYVerificarCapicua(getch(*cadena,indice),cadena);
 }
-
-void llenarBufferInterno(char caracter, char** buffer_interno){
-     if (strlen(buffer_interno) == sizeof(buffer_interno)){
+*/
+/*
+int llenarBufferInternoYVerificarCapicua(char caracter, char** buffer_interno){
+     if (strlen(*buffer_interno) == sizeof(*buffer_interno)){
 	/**Version casera del realloc**/
-	char* nuevo_buffer = (char*)mymalloc(sizeof(*buffer_interno)*2);
+	/*char* nuevo_buffer = (char*)mymalloc(sizeof(*buffer_interno)*2);
 	memset(nuevo_buffer,0, sizeof(nuevo_buffer));
 	strncpy(nuevo_buffer, *buffer_interno, sizeof(*buffer_interno));
 	myfree(buffer_interno);
 	buffer_interno = &nuevo_buffer;
      }	     
      if (caracter == '\0'){
-	/**Se termino la palabra, ya puedo invertirla**/
+	if(esCapicua(*buffer_interno) == 1) {
+	    return 1;
+	}
      } else {
-	*buffer_interno[strlen(*buffer_interno)] =  caracter;
+	*buffer_interno[strlen(*buffer_interno)] = caracter;
      }
-     
+     return 0;
+}
+
+int esCapicua(const char* cadena){
+    if (strlen(cadena) == 0){
+        return 0;
+    }
+
+    cadena = convertToMinus(cadena);
+
+    char* inversa = invertir(cadena, strlen(cadena));
+    if (!inversa){
+        free(inversa);
+        return -1;//Error de calloc
+    }
+
+    if (strcmp(cadena, inversa) == 0){
+        free(inversa);
+        return 1;
+    }
+
+    free(inversa);
+    return 0;
+}
+
+char* convertToMinus(const char* cadena){
+    char minuscula[strlen(cadena) + 1];
+    memset(minuscula, 0, sizeof(minuscula));
+     /**Convierto a minuscula**/
+    /*for (int i = 0; i < strlen(cadena) ; ++i){
+        minuscula[i] = tolower(cadena[i]);
+    }
+    return &minuscula;
+}
+
+
+char* initBufferExterno(size_t size){
+	char* buffer = (char*)mymalloc(size);
+	memset(buffer, size,0);
+}
+*/
+void llenarBufferExterno(char caracter, char** buffer_externo){
+
 }
 
 int main(int argc, char* argv[]){
