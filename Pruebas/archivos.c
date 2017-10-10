@@ -5,8 +5,8 @@
 #include <sys/types.h>
 #include "mymalloc.h"
 
-#define INPUT_BUFF_SIZE 12
-#define OUTPUT_BUFF_SIZE 12
+#define INPUT_BUFF_SIZE 9
+#define OUTPUT_BUFF_SIZE 9
 //extern void putch(char* src, char** dest, size_t indice);
 extern char getch(char* src,size_t indice);
 
@@ -66,7 +66,7 @@ int esCapicua(const char* cadena){
 
 
 char* initBufferInterno(size_t size){
-	char* buffer = (char*)mymalloc(size);
+	char* buffer = (char*)mymalloc(size*sizeof(char));
 	memset(buffer,0,size);
 	return (buffer);
 }
@@ -82,9 +82,6 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 	char caracter = 1;
 	char* buff_interno = initBufferInterno(ibytes);
 	char* nuevo_buffer;
-	char * cadena= "deed";
-	i = esCapicua(cadena);
-	printf("%d\n",i);
 	while (read(ifd, ibuffer, ibytes) > 0){
 		while (indice < ibytes){
 			caracter = getch(ibuffer,indice);
@@ -97,27 +94,56 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 				nuevo_size = sizeof(buff_interno)*4;
 				nuevo_buffer = (char*)mymalloc(nuevo_size);
 				memset(nuevo_buffer,0, nuevo_size);
-				strncpy(nuevo_buffer,buff_interno, sizeof(buff_interno));
+				strncpy(nuevo_buffer,buff_interno, strlen(buff_interno));
 				//memcpy(nuevo_buffer,buff_interno, sizeof(buff_interno));
 				
-				printf("%d\n",nuevo_size);
-				printf("%d\n",strlen(&buff_interno));
-				printf("%d\n",strlen(&nuevo_buffer));
+				//printf("%d\n",nuevo_size);
+				//printf("%d\n",strlen(buff_interno));
+				//printf("%d\n",strlen(nuevo_buffer));
 				myfree(buff_interno);
 				
 				buff_interno = nuevo_buffer;
 
 			 }
-		     
-		     if ((caracter == ' ')|| (caracter == ',') || (caracter == ';') || (caracter == '.')){
-		     	putch('\0',buff_interno,strlen(buff_interno));
+		     if ((caracter == ' ')|| (caracter == ',') || (caracter == ';') || (caracter == '.') || (caracter == '?') || (caracter == '!')){
+		     	//putch('\0',buff_interno,strlen(buff_interno));
+		     	
+		     	printf("\nbuffer interno: ");
 		     	printf(buff_interno);
 				if(esCapicua(buff_interno) == 1) {
 			    	//return 1;
-			    	printf("%d\n",esCapicua(buff_interno));
-			    
+			    	printf("\ncapicua");
+
+			    	//escribo en el obuffer
+		    		i=0;
+	    			while ((strlen(obuffer) < obytes)&&(i<strlen(buff_interno))){
+	    				if (i == obytes){ 
+	    					//si el buff interno es mas grande que el buff de salida
+	    					//imprimo lo que tengo y reseteo el buff de salida
+	    					write(ofd,obuffer,strlen(obuffer));
+							write(ofd,'\n',1);
+	    					memset(obuffer,0,obytes);
+	    				}
+						caracter = getch(buff_interno,i);
+						printf("\n%c",caracter);
+						putch(caracter,obuffer,strlen(obuffer));
+						i++;
+					}
+
+					write(ofd,obuffer,strlen(obuffer));
+					write(ofd,'\n',1);
+					memset(obuffer,0,obytes);
+					//indice=0;
+					
 				}
-				//sino tirar el buff interno a la mierda
+				else{
+
+				}
+				//tirar el buff interno a la mierda
+				
+				
+				myfree(buff_interno);
+				buff_interno = initBufferInterno(ibytes);
 		     } 
 		     else {
 		     	putch(caracter,buff_interno,strlen(buff_interno));
@@ -129,13 +155,13 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 		indice = 0;
 	}
 	i=0;
-	while (indice < obytes){
+	/*while (indice < obytes){
 		caracter = getch(buff_interno,i);
 		putch(caracter,obuffer,indice);
 		indice++;
 		i++;
-	}
-	write(ofd,obuffer,obytes);
+	}*/
+	//write(ofd,obuffer,obytes);
 	//write(ofd, &a, sizeof(char));
 	myfree(ibuffer);
 	myfree(obuffer);
