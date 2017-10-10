@@ -5,110 +5,142 @@
 #include <sys/types.h>
 #include "mymalloc.h"
 
-#define INPUT_BUFF_SIZE 5
-#define OUTPUT_BUFF_SIZE 5
-extern void putch(char* src, char** dest, size_t indice);
+#define INPUT_BUFF_SIZE 12
+#define OUTPUT_BUFF_SIZE 12
+//extern void putch(char* src, char** dest, size_t indice);
 extern char getch(char* src,size_t indice);
+
+void putch(char src, char* dest,int indice){
+	dest[indice]=src;
+}
 /**Funcion de mips a la cual le cedo el control**/
 //extern void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes);
 
-
-char* initBufferInterno(size_t size){
-	char* buffer = (char*)mymalloc(size);
-	memset(buffer, size,0);
-	return (buffer);
-}
-
-/**Funcion de mips a la cual le cedo el control**/
-void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
-	int indice = 0;
-	//Cargo el buffer de entrada
-	char* ibuffer = (char*)mymalloc(ibytes);
-	char* obuffer = (char*)mymalloc(obytes);
-	char a = 1;
-	while (read(ifd, ibuffer, ibytes) > 0){
-		while (indice < ibytes){
-			char** buff_interno = /*REFERENCIA A*/initBufferInterno(ibytes);
-			//if (palabraCapicua(buff_interno) == 1){
-			   //llenarbuffext
-			//}
-			++indice;
-		}
-		indice = 0;
-	}
-	//write(ofd, &a, sizeof(char));
-	myfree(ibuffer);
-	myfree(obuffer);
-}
-/*
 char* invertir(const char* cadena, const size_t tamanio){
-    char* inverso = (char*)calloc(tamanio + 1, sizeof(char));
+	unsigned int i;
+    char* inverso = (char*)mymalloc((sizeof(char)*tamanio)+1);
+    memset(inverso,0,sizeof(inverso));
     if (!inverso){
        return NULL;
     }
-    for (unsigned int i = 1; i<tamanio + 1; ++i){
+    for (i = 1; i < tamanio + 1; ++i){
          strncat(inverso,cadena + (tamanio-i), 1);
     }
     return inverso;
 }
 
-int palabraCapicua(const char** cadena){
-    int indice = 0;
-    return llenarBufferInternoYVerificarCapicua(getch(*cadena,indice),cadena);
-}
-*/
-/*
-int llenarBufferInternoYVerificarCapicua(char caracter, char** buffer_interno){
-     if (strlen(*buffer_interno) == sizeof(*buffer_interno)){
-	/**Version casera del realloc**/
-	/*char* nuevo_buffer = (char*)mymalloc(sizeof(*buffer_interno)*2);
-	memset(nuevo_buffer,0, sizeof(nuevo_buffer));
-	strncpy(nuevo_buffer, *buffer_interno, sizeof(*buffer_interno));
-	myfree(buffer_interno);
-	buffer_interno = &nuevo_buffer;
-     }	     
-     if (caracter == '\0'){
-	if(esCapicua(*buffer_interno) == 1) {
-	    return 1;
-	}
-     } else {
-	*buffer_interno[strlen(*buffer_interno)] = caracter;
-     }
-     return 0;
-}
+
 
 int esCapicua(const char* cadena){
+	int i;
     if (strlen(cadena) == 0){
         return 0;
     }
 
-    cadena = convertToMinus(cadena);
-
-    char* inversa = invertir(cadena, strlen(cadena));
-    if (!inversa){
-        free(inversa);
-        return -1;//Error de calloc
-    }
-
-    if (strcmp(cadena, inversa) == 0){
-        free(inversa);
-        return 1;
-    }
-
-    free(inversa);
-    return 0;
-}
-
-char* convertToMinus(const char* cadena){
+    //Convert to minus
     char minuscula[strlen(cadena) + 1];
     memset(minuscula, 0, sizeof(minuscula));
      /**Convierto a minuscula**/
-    /*for (int i = 0; i < strlen(cadena) ; ++i){
+
+    for (i=0; i < strlen(cadena) ; ++i){
         minuscula[i] = tolower(cadena[i]);
     }
-    return &minuscula;
+
+    
+    char* inversa = invertir(minuscula, strlen(cadena));
+    if (!inversa){
+        myfree(inversa);
+        return -1;//Error de calloc
+    }
+
+    if (strcmp(minuscula, inversa) == 0){
+        myfree(inversa);
+        return 1;
+    }
+
+    myfree(inversa);
+    return 0;
 }
 
+
+
+
+char* initBufferInterno(size_t size){
+	char* buffer = (char*)mymalloc(size);
+	memset(buffer,0,size);
+	return (buffer);
+}
+
+
+/**Funcion de mips a la cual le cedo el control**/
+void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
+	int indice = 0;
+	int i = 0;
+	//Cargo el buffer de entrada
+	char* ibuffer = (char*)mymalloc(ibytes);
+	char* obuffer = (char*)mymalloc(obytes);
+	char caracter = 1;
+	char* buff_interno = initBufferInterno(ibytes);
+	char* nuevo_buffer;
+	char * cadena= "deed";
+	i = esCapicua(cadena);
+	printf("%d\n",i);
+	while (read(ifd, ibuffer, ibytes) > 0){
+		while (indice < ibytes){
+			caracter = getch(ibuffer,indice);
+			//TODO: chequear que el caracter no sea separador
+			//chequear que el buff interno no este lleno
+
+			if (strlen(buff_interno) == sizeof(buff_interno)){
+				/**Version casera del realloc**/
+				size_t nuevo_size;
+				nuevo_size = sizeof(buff_interno)*4;
+				nuevo_buffer = (char*)mymalloc(nuevo_size);
+				memset(nuevo_buffer,0, nuevo_size);
+				strncpy(nuevo_buffer,buff_interno, sizeof(buff_interno));
+				//memcpy(nuevo_buffer,buff_interno, sizeof(buff_interno));
+				
+				printf("%d\n",nuevo_size);
+				printf("%d\n",strlen(&buff_interno));
+				printf("%d\n",strlen(&nuevo_buffer));
+				myfree(buff_interno);
+				
+				buff_interno = nuevo_buffer;
+
+			 }
+		     
+		     if ((caracter == ' ')|| (caracter == ',') || (caracter == ';') || (caracter == '.')){
+		     	putch('x',buff_interno,strlen(buff_interno));
+			/*if(esCapicua(*buffer_interno) == 1) {
+			    return 1;*/
+			    printf("%s\n",buff_interno);
+			//}
+		     } 
+		     else {
+		     	putch(caracter,buff_interno,strlen(buff_interno));
+				//buffer_interno[strlen(buffer_interno)] = caracter;
+		     }
+			++indice;
+		}
+		
+		indice = 0;
+	}
+	i=0;
+	while (indice < obytes){
+		caracter = getch(buff_interno,i);
+		putch(caracter,obuffer,indice);
+		indice++;
+		i++;
+	}
+	write(ofd,obuffer,obytes);
+	//write(ofd, &a, sizeof(char));
+	myfree(ibuffer);
+	myfree(obuffer);
+}
+
+
+
+/*
 
 char* initBufferExterno(size_t size){
 	char* buffer = (char*)mymalloc(size);
