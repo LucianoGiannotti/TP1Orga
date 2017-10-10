@@ -110,11 +110,14 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 			 }
 		     
 		     if ((caracter == ' ')|| (caracter == ',') || (caracter == ';') || (caracter == '.')){
-		     	putch('x',buff_interno,strlen(buff_interno));
-			/*if(esCapicua(*buffer_interno) == 1) {
-			    return 1;*/
-			    printf("%s\n",buff_interno);
-			//}
+		     	putch('\0',buff_interno,strlen(buff_interno));
+		     	printf(buff_interno);
+				if(esCapicua(buff_interno) == 1) {
+			    	//return 1;
+			    	printf("%d\n",esCapicua(buff_interno));
+			    
+				}
+				//sino tirar el buff interno a la mierda
 		     } 
 		     else {
 		     	putch(caracter,buff_interno,strlen(buff_interno));
