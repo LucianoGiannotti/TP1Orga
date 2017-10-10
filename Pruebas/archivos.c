@@ -7,6 +7,7 @@
 
 #define INPUT_BUFF_SIZE 9
 #define OUTPUT_BUFF_SIZE 9
+#define INTERNAL_BUFF_SIZE 45
 //extern void putch(char* src, char** dest, size_t indice);
 extern char getch(char* src,size_t indice);
 
@@ -80,7 +81,7 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 	char* ibuffer = (char*)mymalloc(ibytes);
 	char* obuffer = (char*)mymalloc(obytes);
 	char caracter = 1;
-	char* buff_interno = initBufferInterno(ibytes);
+	char* buff_interno = initBufferInterno(INTERNAL_BUFF_SIZE);
 	char* nuevo_buffer;
 	while (read(ifd, ibuffer, ibytes) > 0){
 		while (indice < ibytes){
@@ -90,28 +91,27 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 			if (strlen(buff_interno) == sizeof(buff_interno)){
 				/**Version casera del realloc**/
 				size_t nuevo_size;
-				nuevo_size = sizeof(buff_interno)*4;
+				nuevo_size = strlen(buff_interno)*4;
 				nuevo_buffer = (char*)mymalloc(nuevo_size);
 				memset(nuevo_buffer,0, nuevo_size);
 				strncpy(nuevo_buffer,buff_interno, strlen(buff_interno));
 				//memcpy(nuevo_buffer,buff_interno, sizeof(buff_interno));
 				
 				//printf("%d\n",nuevo_size);
-				printf("%d\n",strlen(buff_interno));
 				//printf("%d\n",strlen(nuevo_buffer));
 				myfree(buff_interno);
 				
 				buff_interno = nuevo_buffer;
 
 			 }
-		     if ((caracter == ' ')|| (caracter == ',') || (caracter == ';') || (caracter == '.') || (caracter == '?') || (caracter == '!')){
+		     if (((caracter < 65)||(caracter > 90))&&((caracter < 97)||(caracter > 122))){
 		     	//putch('\0',buff_interno,strlen(buff_interno));
 		     	
 		     	printf("\nbuffer interno: ");
 		     	printf(buff_interno);
 				if(esCapicua(buff_interno) == 1) {
 			    	//return 1;
-			    	printf("\ncapicua");
+			    	//printf("\ncapicua");
 
 			    	//escribo en el obuffer
 		    		i=0;
@@ -141,7 +141,7 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 				
 				
 				myfree(buff_interno);
-				buff_interno = initBufferInterno(ibytes);
+				buff_interno = initBufferInterno(INTERNAL_BUFF_SIZE);
 		     } 
 		     else {
 		     	putch(caracter,buff_interno,strlen(buff_interno));

@@ -1,9 +1,12 @@
 #include <sys/syscall.h>
 #include <mips/regdef.h>
-#include "mymcalloc.h"
+#include "mymalloc.h"
+	.section .mdebug.abi32
+	.previous
 	.abicalls
 	.text
 	.align	2
+
 	.globl	getch
 	.ent	getch
 getch:	#devuelve un byte(char)
@@ -31,10 +34,9 @@ getch:	#devuelve un byte(char)
 	addu	sp,sp,24
 	j	ra
 	.end	getch
-	.size	getch, .-getch
+
 	.globl	putch
 	.ent	putch
-
 putch:
 	.frame	$fp,24,ra		# vars= 8, regs= 2/0, args= 0, extra= 8
 	.mask	0x50000000,-4
@@ -283,10 +285,6 @@ initBufferInterno:
 	.rdata
 	.align	2
 LC0:
-	.ascii	"\n"
-	.ascii	"buffer interno: \000"
-	.align	2
-LC1:
 	.ascii	"\n\000"
 	.text
 	.align	2
@@ -351,20 +349,12 @@ L39:
 	move	v1,v0
 	li	v0,4			# 0x4
 	bne	v1,v0,L40
-	lw	a0,44($fp)
-	la	t9,strlen
-	jal	ra,t9
-	sll	v0,v0,2
+	li	v0,16			# 0x10
 	sw	v0,52($fp)
 	lw	a0,52($fp)
-	la	t9,mymalloc
+	la	t9,initBufferInterno
 	jal	ra,t9
 	sw	v0,48($fp)
-	lw	a0,48($fp)
-	move	a1,zero
-	lw	a2,52($fp)
-	la	t9,memset
-	jal	ra,t9
 	lw	a0,44($fp)
 	la	t9,strlen
 	jal	ra,t9
@@ -395,12 +385,6 @@ L42:
 	beq	v0,zero,L43
 	b	L41
 L43:
-	la	a0,LC0
-	la	t9,printf
-	jal	ra,t9
-	lw	a0,44($fp)
-	la	t9,printf
-	jal	ra,t9
 	lw	a0,44($fp)
 	la	t9,esCapicua
 	jal	ra,t9
@@ -435,7 +419,7 @@ L47:
 	la	t9,write
 	jal	ra,t9
 	lw	a0,80($fp)
-	la	a1,LC1
+	la	a1,LC0
 	li	a2,1			# 0x1
 	la	t9,write
 	jal	ra,t9
@@ -474,7 +458,7 @@ L46:
 	la	t9,write
 	jal	ra,t9
 	lw	a0,80($fp)
-	la	a1,LC1
+	la	a1,LC0
 	li	a2,1			# 0x1
 	la	t9,write
 	jal	ra,t9
@@ -513,6 +497,9 @@ L38:
 	b	L34
 L35:
 	sw	zero,28($fp)
+	lw	a0,44($fp)
+	la	t9,myfree
+	jal	ra,t9
 	lw	a0,32($fp)
 	la	t9,myfree
 	jal	ra,t9
@@ -526,27 +513,72 @@ L35:
 	j	ra
 	.end	palindrome
 	.size	palindrome, .-palindrome
+	.rdata
 	.align	2
-	.globl	llenarBufferExterno
-	.ent	llenarBufferExterno
-llenarBufferExterno:
-	.frame	$fp,24,ra		# vars= 8, regs= 2/0, args= 0, extra= 8
-	.mask	0x50000000,-4
+LC1:
+	.ascii	"prueba.txt\000"
+	.align	2
+LC2:
+	.ascii	"r+\000"
+	.align	2
+LC3:
+	.ascii	"output.txt\000"
+	.align	2
+LC4:
+	.ascii	"w+\000"
+	.text
+	.align	2
+	.globl	main
+	.ent	main
+main:
+	.frame	$fp,56,ra		# vars= 16, regs= 3/0, args= 16, extra= 8
+	.mask	0xd0000000,-8
 	.fmask	0x00000000,0
 	.set	noreorder
 	.cpload	t9
 	.set	reorder
-	subu	sp,sp,24
-	.cprestore 0
-	sw	$fp,20(sp)
-	sw	gp,16(sp)
+	subu	sp,sp,56
+	.cprestore 16
+	sw	ra,48(sp)
+	sw	$fp,44(sp)
+	sw	gp,40(sp)
 	move	$fp,sp
-	move	v0,a0
-	sw	a1,28($fp)
-	sb	v0,8($fp)
+	sw	a0,56($fp)
+	sw	a1,60($fp)
+	la	a0,LC1
+	la	a1,LC2
+	la	t9,fopen
+	jal	ra,t9
+	sw	v0,24($fp)
+	la	a0,LC3
+	la	a1,LC4
+	la	t9,fopen
+	jal	ra,t9
+	sw	v0,28($fp)
+	lw	v0,24($fp)
+	lh	v0,14(v0)
+	sw	v0,32($fp)
+	lw	v0,28($fp)
+	lh	v0,14(v0)
+	sw	v0,36($fp)
+	lw	a0,32($fp)
+	li	a1,12			# 0xc
+	lw	a2,36($fp)
+	li	a3,12			# 0xc
+	la	t9,palindrome
+	jal	ra,t9
+	lw	a0,24($fp)
+	la	t9,fclose
+	jal	ra,t9
+	lw	a0,28($fp)
+	la	t9,fclose
+	jal	ra,t9
+	move	v0,zero
 	move	sp,$fp
-	lw	$fp,20(sp)
-	addu	sp,sp,24
+	lw	ra,48(sp)
+	lw	$fp,44(sp)
+	addu	sp,sp,56
 	j	ra
-	.end	llenarBufferExterno
-	.size	llenarBufferExterno, .-llenarBufferExterno
+	.end	main
+	.size	main, .-main
+	.ident	"GCC: (GNU) 3.3.3 (NetBSD nb3 20040520)"

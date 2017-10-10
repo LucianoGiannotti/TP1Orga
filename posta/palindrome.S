@@ -1,9 +1,12 @@
 #include <sys/syscall.h>
 #include <mips/regdef.h>
-#include "mymcalloc.h"
+
+	
 	.abicalls
 	.text
 	.align	2
+	.extern mymalloc
+	.extern myfree
 	.globl	getch
 	.ent	getch
 getch:	#devuelve un byte(char)
@@ -329,8 +332,10 @@ L34:
 	lw	a0,72($fp)
 	lw	a1,32($fp)
 	lw	a2,76($fp)
-	la	t9,read
-	jal	ra,t9
+	#la	t9,read
+	#jal	ra,t9
+	lw v0,SYS_read
+	syscall
 	bgtz	v0,L37
 	b	L35
 L37:
@@ -432,13 +437,17 @@ L47:
 	lw	a0,80($fp)
 	lw	a1,36($fp)
 	move	a2,v0
-	la	t9,write
-	jal	ra,t9
+	##la	t9,write
+	##jal	ra,t9
+	lw	v0,SYS_write
+	syscall
 	lw	a0,80($fp)
 	la	a1,LC1
 	li	a2,1			# 0x1
-	la	t9,write
-	jal	ra,t9
+	#la	t9,write
+	#jal	ra,t9
+	lw	v0,SYS_write
+	syscall
 	lw	a0,36($fp)
 	move	a1,zero
 	lw	a2,84($fp)
@@ -471,13 +480,17 @@ L46:
 	lw	a0,80($fp)
 	lw	a1,36($fp)
 	move	a2,v0
-	la	t9,write
-	jal	ra,t9
+	#la	t9,write
+	#jal	ra,t9
+	lw	v0,SYS_write
+	syscall
 	lw	a0,80($fp)
 	la	a1,LC1
 	li	a2,1			# 0x1
-	la	t9,write
-	jal	ra,t9
+	#la	t9,write
+	#jal	ra,t9
+	lw	v0,SYS_write
+	syscall
 	lw	a0,36($fp)
 	move	a1,zero
 	lw	a2,84($fp)
