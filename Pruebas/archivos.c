@@ -85,7 +85,6 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 	while (read(ifd, ibuffer, ibytes) > 0){
 		while (indice < ibytes){
 			caracter = getch(ibuffer,indice);
-			//TODO: chequear que el caracter no sea separador
 			//chequear que el buff interno no este lleno
 
 			if (strlen(buff_interno) == sizeof(buff_interno)){
@@ -98,7 +97,7 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 				//memcpy(nuevo_buffer,buff_interno, sizeof(buff_interno));
 				
 				//printf("%d\n",nuevo_size);
-				//printf("%d\n",strlen(buff_interno));
+				printf("%d\n",strlen(buff_interno));
 				//printf("%d\n",strlen(nuevo_buffer));
 				myfree(buff_interno);
 				
@@ -121,17 +120,16 @@ void palindrome(int ifd, size_t ibytes, int ofd, size_t obytes){
 	    					//si el buff interno es mas grande que el buff de salida
 	    					//imprimo lo que tengo y reseteo el buff de salida
 	    					write(ofd,obuffer,strlen(obuffer));
-							write(ofd,'\n',1);
+							write(ofd,"\n",1);
 	    					memset(obuffer,0,obytes);
 	    				}
 						caracter = getch(buff_interno,i);
-						printf("\n%c",caracter);
 						putch(caracter,obuffer,strlen(obuffer));
 						i++;
 					}
 
 					write(ofd,obuffer,strlen(obuffer));
-					write(ofd,'\n',1);
+					write(ofd,"\n",1);
 					memset(obuffer,0,obytes);
 					//indice=0;
 					
