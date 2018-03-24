@@ -11,14 +11,16 @@
 
 int main(int argc, char* argv[])
 {
-    int resWidth;
-    int resHeight;
+    double resWidth;
+    double resHeight;
     double realPart;
     double imaginaryPart;
-    int width;
-    int height;
+    double width;
+    double height;
     double realSeed;
     double imaginarySeed;
+    const char delimitator[4] = "x+-i";
+    char *pSeparator;
 
     resWidth = DEFAULT_WIDTH_RES;
     resHeight = DEFAULT_HEIGHT_RES;
@@ -62,34 +64,24 @@ Ejemplos:\n\
                     printf("Error: valor de ancho resolucion ingresado no valido\n");
                     return 0;
                 } else {
-                    resWidth = atoi(argv[i+1]);
-                }
-
-                if(!argv[i+2]){
-                    printf("Error: valor de altura resolucion ingresado no valido\n");
-                    return 0;
-                } else {
-                    resHeight = atoi(argv[i+2]);
+                    pSeparator = strtok(argv[i+1],delimitator);
+                    resWidth = atof(pSeparator);
+                    pSeparator = strtok (NULL,delimitator);
+                    resHeight = atof(pSeparator);
                 }
         }
 
         if (!strcmp(argv[i], "-C") ||
             !strcmp(argv[i], "--center")){
                 if(!argv[i+1]){
-                    printf("Error: valor de parte real de centro ingresado no valido\n");
+                    printf("Error: valor de centro ingresado no valido\n");
                     return 0;
                 } else {
-                    realPart = atof(argv[i+1]);
+                    pSeparator = strtok(argv[i+1],delimitator);
+                    realPart = atof(pSeparator);
+                    pSeparator = strtok (NULL,delimitator);
+                    imaginaryPart = atof(pSeparator);
                 }
-
-                if(!argv[i+2]){
-                    printf("Error: valor de parte imaginaria de centro ingresada no valido\n");
-                    return 0;
-                } else {
-                    imaginaryPart = atof(argv[i+2]);
-                }
-
-
         }
 
         if (!strcmp(argv[i], "-w") ||
@@ -98,7 +90,7 @@ Ejemplos:\n\
                     printf("Error: valor de ancho ingresado no valido\n");
                     return 0;
                 } else {
-                    width = atoi(argv[i+1]);
+                    width = atof(argv[i+1]);
                 }
         }
 
@@ -108,24 +100,20 @@ Ejemplos:\n\
                     printf("Error: valor de altura ingresado no valido\n");
                     return 0;
                 } else {
-                    height = atoi(argv[i+1]);
+                    height = atof(argv[i+1]);
                 }
         }
 
         if (!strcmp(argv[i], "-s") ||
             !strcmp(argv[i], "--seed")){
                 if(!argv[i+1]){
-                    printf("Error: valor de parte real de seed ingresado no valido\n");
+                    printf("Error: valor de seed ingresado no valido\n");
                     return 0;
                 } else {
-                    realSeed = atof(argv[i+1]);
-                }
-
-                if(!argv[i+2]){
-                    printf("Error: valor de parte imaginaria de seed ingresado no valido\n");
-                    return 0;
-                } else {
-                    imaginarySeed = atof(argv[i+2]);
+                    pSeparator = strtok(argv[i+1],delimitator);
+                    realSeed = atof(pSeparator);
+                    pSeparator = strtok (NULL,delimitator);
+                    imaginarySeed = atof(pSeparator);
                 }
         }
 
@@ -145,13 +133,13 @@ Ejemplos:\n\
         printf("\n");
         printf("%lf",imaginarySeed);
         printf("\n");
-        printf("%i",resHeight);
+        printf("%lf",resHeight);
         printf("\n");
-        printf("%i",resWidth);
+        printf("%lf",resWidth);
         printf("\n");
-        printf("%i",width);
+        printf("%lf",width);
         printf("\n");
-        printf("%i",height);
+        printf("%lf",height);
         printf("\n");
     return 0;
 }
