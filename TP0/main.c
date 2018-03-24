@@ -61,7 +61,7 @@ Ejemplos:\n\
         if (!strcmp(argv[i], "-r") ||
             !strcmp(argv[i], "--resolution")){
                 if(!argv[i+1]){
-                    printf("Error: valor de ancho resolucion ingresado no valido\n");
+                    printf("Error: valor de resolucion ingresado no valido\n");
                     return 0;
                 } else {
                     pSeparator = strtok(argv[i+1],delimitator);
