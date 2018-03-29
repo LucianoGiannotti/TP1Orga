@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define DEFAULT_WIDTH_RES 640;
 #define DEFAULT_HEIGHT_RES 480;
@@ -9,27 +10,88 @@
 #define DEFAULT_REALSEED -0.726895347709114071439;
 #define DEFAULT_IMAGINARYSEED 0.188887129043845954792;
 
+typedef struct{
+	double x,y;
+}complex;
+
+
+complex add(complex a,complex b){
+	complex c;
+	c.x = a.x + b.x;
+	c.y = a.y + b.y;
+	return c;
+}
+
+complex sqr(complex a){
+	complex c;
+	c.x = a.x*a.x - a.y*a.y;
+	c.y = 2*a.x*a.y;
+	return c;
+}
+
+double mod(complex a){
+	return sqrt(a.x*a.x + a.y*a.y);
+}
+
+int processImage(double resW, double resH,
+                 complex pPos, complex seed,
+                 double w, double h,
+                 FILE* im,int N){
+
+    /* allocate memory for data */
+   char *buff = (char *) malloc (resW*resH*sizeof(char));
+
+    complex z0,z1;
+    z0 = pPos;
+    z1 = pPos;
+
+    for(int y=0;y<resH;y++){
+        for(int x=0;x<resW;x++){
+            for(int i=0;i<N-1;i++){
+                if (mod(z1) > 2){
+                        return 0;
+                }
+                z1 = add(sqr(z0),seed);
+				z0 = z1;
+            }
+            /* añadir al buffer */
+        }
+    }
+
+
+    /* write the header */
+    fprintf(im, "P5\n%u %u 255\n", resW, resH);
+
+    /* write the array */
+    fwrite(buff, 1, resW*resH*sizeof(char), im);
+
+    /* free memory */
+    free(buff);
+
+    return 0;
+}
+
+
 int main(int argc, char* argv[])
 {
     double resWidth;
     double resHeight;
-    double realPart;
-    double imaginaryPart;
+    complex pixelPos;
     double width;
     double height;
-    double realSeed;
-    double imaginarySeed;
+    complex seed;
+
     const char delimitator[4] = "x+-i";
     char *pSeparator;
 
     resWidth = DEFAULT_WIDTH_RES;
     resHeight = DEFAULT_HEIGHT_RES;
-    realPart = DEFAULT_REALIMAGINARY;
-    imaginaryPart = DEFAULT_REALIMAGINARY;
+    pixelPos.x = DEFAULT_REALIMAGINARY;
+    pixelPos.y = DEFAULT_REALIMAGINARY;
     width = DEFAULT_WIDTH_HEIGHT;
     height = DEFAULT_WIDTH_HEIGHT;
-    realSeed = DEFAULT_REALSEED;
-    imaginarySeed = DEFAULT_IMAGINARYSEED;
+    seed.x = DEFAULT_REALSEED;
+    seed.y = DEFAULT_IMAGINARYSEED;
 
     for (int i = 1; i < argc; ++i){
         if (((!strcmp(argv[i],"-V")))
@@ -78,9 +140,9 @@ Ejemplos:\n\
                     return 0;
                 } else {
                     pSeparator = strtok(argv[i+1],delimitator);
-                    realPart = atof(pSeparator);
+                    pixelPos.x = atof(pSeparator);
                     pSeparator = strtok (NULL,delimitator);
-                    imaginaryPart = atof(pSeparator);
+                    pixelPos.y = atof(pSeparator);
                 }
         }
 
@@ -111,35 +173,32 @@ Ejemplos:\n\
                     return 0;
                 } else {
                     pSeparator = strtok(argv[i+1],delimitator);
-                    realSeed = atof(pSeparator);
+                    seed.x = atof(pSeparator);
                     pSeparator = strtok (NULL,delimitator);
-                    imaginarySeed = atof(pSeparator);
+                    seed.y = atof(pSeparator);
                 }
         }
 
         if (!strcmp(argv[i], "-o") ||
             !strcmp(argv[i], "--output")){
 
+               /* open output file */
+               FILE* image = fopen(argv[1], "wb");
+               if (image == NULL)
+               {
+                  fprintf(stderr, "Can't open output file %s!\n", argv[1]);
+                  exit(1);
+               }
+
             /**CASO DE COUT**/
             if (strcmp(argv[i+1], "-")){
             }
+            processImage(resWidth,resHeight,pixelPos,seed,width,height,image,100/*PASO*/);
         }
+
      }
-        printf("%lf",realPart);
-        printf("\n");
-        printf("%lf",imaginaryPart);
-        printf("\n");
-        printf("%lf",realSeed);
-        printf("\n");
-        printf("%lf",imaginarySeed);
-        printf("\n");
-        printf("%lf",resHeight);
-        printf("\n");
-        printf("%lf",resWidth);
-        printf("\n");
-        printf("%lf",width);
-        printf("\n");
-        printf("%lf",height);
-        printf("\n");
+
+
+
     return 0;
 }
