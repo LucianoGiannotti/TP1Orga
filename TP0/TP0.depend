@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1522282460 source:/home/fabrizio/Facultad/Compu/TP0/main.c
+1522796244 source:/home/fabrizio/Facultad/Compu/TP0/main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

@@ -15,67 +15,79 @@ typedef struct{
 }complex;
 
 
-complex add(complex a,complex b){
+complex addComplexNumbers(complex a,complex b){
 	complex c;
 	c.x = a.x + b.x;
 	c.y = a.y + b.y;
 	return c;
 }
 
-complex sqr(complex a){
+complex sqrComplex(complex a){
 	complex c;
 	c.x = a.x*a.x - a.y*a.y;
 	c.y = 2*a.x*a.y;
 	return c;
 }
 
-double mod(complex a){
+double absComplex(complex a){
 	return sqrt(a.x*a.x + a.y*a.y);
 }
 
-int processImage(double resW, double resH,
+int processImage(int resW, int resH,
                  complex pPos, complex seed,
                  double w, double h,
-                 FILE* im,int N){
+                 FILE* im, int N){
 
-    /* allocate memory for data */
-   char *buff = (char *) malloc (resW*resH*sizeof(char));
+    int x,y,i;
+    int data[resH][resW];
+    complex z0,z1,pixel;
 
-    complex z0,z1;
-    z0 = pPos;
-    z1 = pPos;
-
-    for(int y=0;y<resH;y++){
-        for(int x=0;x<resW;x++){
-            for(int i=0;i<N-1;i++){
-                if (mod(z1) > 2){
-                        return 0;
+    for(y=0;y<resH;y++){
+        for(x=0;x<resW;x++){
+            // Set initial z value based on current pixel position
+           // pixel.x = 1.5 * (x - resW / 2) / (0.5 * w * resW) + pPos.x;;
+            //pixel.y = (y - h / 2) / (0.5 * h * resH) + pPos.y;
+            z0.x = 0;
+            z0.y = 0;
+            z1.x = 0;
+            z1.y = 0;
+            for(i=0;i<N-1;i++){
+                z0 = addComplexNumbers(sqrComplex(z1),seed);
+                if (absComplex(z0) > 2.0){
+                    break;
                 }
-                z1 = add(sqr(z0),seed);
-				z0 = z1;
+                i++;
             }
-            /* añadir al buffer */
+            /* añadir al buffer el brillo */
+            //printf("%i ",i);
+            data[y][x] = i;
+            //fprintf(im, "%3d ", data[y][x]);
         }
     }
 
+    y = 0;
+    while(y < resH)
+    {
+        x = 0;
+        while (x < resW)
+        {
+            fprintf(im, "%3d ", data[y][x]);
 
-    /* write the header */
-    fprintf(im, "P5\n%u %u 255\n", resW, resH);
+            x++;
+        }
+        fprintf(im, "\n");
+        y++;
+    }
 
-    /* write the array */
-    fwrite(buff, 1, resW*resH*sizeof(char), im);
-
-    /* free memory */
-    free(buff);
-
-    return 0;
+   /* close the file */
+    return fclose(im);
 }
 
 
 int main(int argc, char* argv[])
 {
-    double resWidth;
-    double resHeight;
+    int resWidth;
+    int resHeight;
     complex pixelPos;
     double width;
     double height;
@@ -183,17 +195,18 @@ Ejemplos:\n\
             !strcmp(argv[i], "--output")){
 
                /* open output file */
-               FILE* image = fopen(argv[1], "wb");
+               FILE* image = fopen(argv[i+1], "w");
+               int pasoN = 300;
                if (image == NULL)
                {
-                  fprintf(stderr, "Can't open output file %s!\n", argv[1]);
+                  fprintf(stderr, "Can't open output file %s!\n", argv[i+1]);
                   exit(1);
                }
 
             /**CASO DE COUT**/
             if (strcmp(argv[i+1], "-")){
             }
-            processImage(resWidth,resHeight,pixelPos,seed,width,height,image,100/*PASO*/);
+            processImage(resWidth,resHeight,pixelPos,seed,width,height,image,pasoN);
         }
 
      }
