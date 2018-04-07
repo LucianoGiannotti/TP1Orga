@@ -49,8 +49,8 @@ int processImage(int resW, int resH,
             //pixel.y = (y - h / 2) / (0.5 * h * resH) + pPos.y;
             int l = (resW<resH)?resW:resH;
 
-            z1.x=-0.75*(w*(x-resW/2)/l);
-            z1.y=h*(y-resH/2)/l; //no tengo en cuenta el centro todavia
+            z1.x=-0.75*(w*((x + pPos.x)-resW/2)/l);
+            z1.y=h*((y + pPos.y)-resH/2)/l; //no tengo en cuenta el centro todavia
 
             z0.x = 0;
             z0.y = 0;
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
         if (((!strcmp(argv[i],"-V")))
             || ((!strcmp(argv[i],"--version")))){
             printf("TP0 Organizacion de Computadoras version \"1.0.0\"\
-                   \n\nIntegrantes:\n Fabrizio Cozza\n Kevin Kajachuán\n Luciano Giannotti\n");
+                   \n\nIntegrantes:\n Fabrizio Cozza\n Kevin Cajachuán\n Luciano Giannotti\n");
             return 0;
         }
         if (((!strcmp(argv[i],"-h"))) || ((!strcmp(argv[i],"--help")))){
@@ -152,16 +152,23 @@ Ejemplos:\n\
                 }
         }
 
-        if (!strcmp(argv[i], "-C") ||
+        if (!strcmp(argv[i], "-c") ||
             !strcmp(argv[i], "--center")){
                 if(!argv[i+1]){
                     printf("Error: valor de centro ingresado no valido\n");
                     return 0;
                 } else {
+										char *copy = strdup(argv[i+1]);
+										int sign = 1;
+										if(copy[0] == '-') sign = -1;
                     pSeparator = strtok(argv[i+1],delimitator);
-                    pixelPos.x = atof(pSeparator);
+                    pixelPos.x = sign * atof(pSeparator);
+										int len = strlen(pSeparator);
+										if(sign == -1) sign = copy[len + 1] == '-' ? -1 : 1;
+										else sign = copy[len] == '-' ? -1 : 1;
                     pSeparator = strtok (NULL,delimitator);
-                    pixelPos.y = atof(pSeparator);
+                    pixelPos.y = sign * atof(pSeparator);
+										free(copy);
                 }
         }
 
@@ -191,10 +198,17 @@ Ejemplos:\n\
                     printf("Error: valor de seed ingresado no valido\n");
                     return 0;
                 } else {
-                    pSeparator = strtok(argv[i+1],delimitator);
-                    seed.x = atof(pSeparator);
-                    pSeparator = strtok (NULL,delimitator);
-                    seed.y = atof(pSeparator);
+										char *copy = strdup(argv[i+1]);
+										int sign = 1;
+										if(copy[0] == '-') sign = -1;
+										pSeparator = strtok(argv[i+1],delimitator);
+										seed.x = sign * atof(pSeparator);
+										int len = strlen(pSeparator);
+										if(sign == -1) sign = copy[len + 1] == '-' ? -1 : 1;
+										else sign = copy[len] == '-' ? -1 : 1;
+										pSeparator = strtok (NULL,delimitator);
+										seed.y = sign * atof(pSeparator);
+										free(copy);
                 }
         }
 
