@@ -47,9 +47,10 @@ int processImage(int resW, int resH,
             // Set initial z value based on current pixel position
            // pixel.x = 1.5 * (x - resW / 2) / (0.5 * w * resW) + pPos.x;;
             //pixel.y = (y - h / 2) / (0.5 * h * resH) + pPos.y;
+            int l = (resW<resH)?resW:resH;
 
-            z1.x= (x-w/2)/resW;
-            z1.y= (y-h/2)/resH; //no tengo en cuenta el centro todavía
+            z1.x=-0.75*(w*(x-resW/2)/l);
+            z1.y=h*(y-resH/2)/l; //no tengo en cuenta el centro todavia
 
             z0.x = 0;
             z0.y = 0;
@@ -57,8 +58,7 @@ int processImage(int resW, int resH,
             for(i=0;i<N-1;i++){
                 z0 = addComplexNumbers(sqrComplex(z1),seed);
                 z1=z0;
-                //if (absComplex(z0) > 2.0)
-                if((z0.x>w)|(z0.y>h)){
+                if (absComplex(z0) > 2.0){
                     break;
                 }
                 i++;
@@ -71,7 +71,7 @@ int processImage(int resW, int resH,
     }
     fprintf(im, "P2 \n");
     fprintf(im, "%d %d \n",resW,resH);
-    fprintf(im, "255 \n");
+    fprintf(im, "300 \n");
     y = 0;
     while(y < resH)
     {
@@ -203,7 +203,7 @@ Ejemplos:\n\
 
                /* open output file */
                FILE* image = fopen(argv[i+1], "w");
-               int pasoN = 255;
+               int pasoN = 300;
                if (image == NULL)
                {
                   fprintf(stderr, "Can't open output file %s!\n", argv[i+1]);
