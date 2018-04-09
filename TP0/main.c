@@ -40,17 +40,16 @@ int processImage(int resW, int resH,
 
     int x,y,i;
     int data[resH][resW];
-    complex z0,z1,pixel;
-
+    complex z0,z1;
+    printf("%lf\n", pPos.x - w/2 + w/resW/2 + w/resW * 640);
     for(y=0;y<resH;y++){
         for(x=0;x<resW;x++){
             // Set initial z value based on current pixel position
-           // pixel.x = 1.5 * (x - resW / 2) / (0.5 * w * resW) + pPos.x;;
-            //pixel.y = (y - h / 2) / (0.5 * h * resH) + pPos.y;
-            int l = (resW<resH)?resW:resH;
+            //ARRANCA
+            z1.x =  pPos.x - w/2 + w/resW/2 + w/resW * x;
+            z1.y = pPos.y + h/2 - h/resH/2 - h/resH * y; 
+            //NO BORRAR
 
-            z1.x=-0.75*(w*((x + pPos.x)-resW/2)/l);
-            z1.y=h*((y + pPos.y)-resH/2)/l; //no tengo en cuenta el centro todavia
 
             z0.x = 0;
             z0.y = 0;
@@ -58,7 +57,7 @@ int processImage(int resW, int resH,
             for(i=0;i<N-1;i++){
                 z0 = addComplexNumbers(sqrComplex(z1),seed);
                 z1=z0;
-                if (absComplex(z0) > 2.0){
+                if ((absComplex(z0) > 2.0)){
                     break;
                 }
                 i++;
