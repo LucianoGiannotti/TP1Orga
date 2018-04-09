@@ -41,13 +41,14 @@ int processImage(int resW, int resH,
     int x,y,i;
     int data[resH][resW];
     complex z0,z1;
-    printf("%lf\n", pPos.x - w/2 + w/resW/2 + w/resW * 640);
+    seed.x = -0.726895347709114071439;
+    
     for(y=0;y<resH;y++){
         for(x=0;x<resW;x++){
             // Set initial z value based on current pixel position
             //ARRANCA
-            z1.x =  pPos.x - w/2 + w/resW/2 + w/resW * x;
-            z1.y = pPos.y + h/2 - h/resH/2 - h/resH * y; 
+            z1.x = pPos.x - w/2 + w/(double)resW/2 + w/(double)resW * x;
+            z1.y = pPos.y + h/2 - h/(double)resH/2 - h/(double)resH * y;
             //NO BORRAR
 
 
@@ -70,7 +71,7 @@ int processImage(int resW, int resH,
     }
     fprintf(im, "P2 \n");
     fprintf(im, "%d %d \n",resW,resH);
-    fprintf(im, "300 \n");
+    fprintf(im, "500 \n");
     y = 0;
     while(y < resH)
     {
@@ -216,7 +217,7 @@ Ejemplos:\n\
 
                /* open output file */
                FILE* image = fopen(argv[i+1], "w");
-               int pasoN = 300;
+               int pasoN = 500;
                if (image == NULL)
                {
                   fprintf(stderr, "Can't open output file %s!\n", argv[i+1]);
