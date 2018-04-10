@@ -6,6 +6,7 @@
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{enumitem}
+\usepackage{bookmark}
 \inputencoding{latin1}
 \graphicspath{/imagenes,/Casos de prueba}
 
@@ -21,7 +22,7 @@
             \texttt{luciano\_giannotti@hotmail.com.ar}                                              \\[3.5ex]
 	 \newline
             \normalsize{1er. Cuatrimestre de 2018}                                      \\
-            \normalsize{66.20 Organizaci\'{o}n de Computadoras  $-$ Pr\'{a}ctica Viernes}  \\
+            \normalsize{66.20 Organizaci\'{o}n de Computadoras  $-$ Pr\'{a}ctica Martes}  \\
             \normalsize{Facultad de Ingenier\'{i}a, Universidad de Buenos Aires}            \\
        }
 \date{}
@@ -52,9 +53,9 @@ A ese punto se lo eleva al cuadrado y le suma la semilla mencionada en la secci\
 
 \section{C\'{o}digo C}
 
-En esta secci\'{o}n colocaremos el ci\'{o}digo fuente del programa en lenguaje C.
+En esta secci\'{o}n colocaremos el c\'{o}digo fuente del programa en lenguaje C.
 
-\lstinputlisting[basicstyle=\ttfamily\scriptsize]{main.c}
+\lstinputlisting[basicstyle=\ttfamily\scriptsize,breaklines=true]{main.c}
 
 \newpage
 
@@ -66,7 +67,7 @@ Para las pruebas compilamos el programa con gcc de la siguiente manera:
 $gcc main.c -o tp0
 \end{lstlisting}
 Luego corremos el archivo \textbf{test.sh}.
-Ya que las pruebas son sobre las imágenes, las vamos a realizar a ojo comparandolas con las del enunciado y con las obtenidas en un generador online (\url{http://usefuljs.net/fractals/}).\\
+Ya que las pruebas son sobre las imágenes, las vamos a realizar a ojo comparandolas con las del enunciado y con las obtenidas en un generador online (\url{http://usefuljs.net/fractals/}).
 
 Cabe destacar que las imagenes del generador tienen mayor rango dinamico que las del enunciado y nosotros decidimos generarlas como en \'{e}ste \'{u}ltimo.
 
@@ -152,8 +153,8 @@ $ ./tp0 -s -0.157-1.041i -o cinco.pgm
 
 \subsection{Caso de imagen muy angosta}
 En este caso cambiamos la resolucion para obtener una imagen de un pixel
-de alto y 800 de ancho. Es dicil observarla en el informe por lo que decidimos
-no colocarla. Sin embargo el archivo se encuentra en la misma carpeta del TP con el nombre \textit{seis.pgm}.
+de alto y 800 de ancho. \newline
+Es dif\'{i}cil observarla en el informe por lo que decidimos no colocarla. Sin embargo el archivo se encuentra en la misma carpeta del TP con el nombre \textit{seis.pgm}.
 
 \begin{lstlisting}[frame=single]
 $ ./tp0 -r 800x1 -o seis.pgm
@@ -163,7 +164,7 @@ $ ./tp0 -r 800x1 -o seis.pgm
 
 En esta secci\'{o}n colocaremos el ci\'{o}digo assembly MIPS generado por NetBSD.
 
-\lstinputlisting[basicstyle=\ttfamily\scriptsize]{main.s}
+\lstinputlisting[basicstyle=\ttfamily\scriptsize,breaklines=true]{main.s}
 
 \section{Bibliograf\'{i}a}
 \begin{enumerate}
