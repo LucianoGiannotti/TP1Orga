@@ -254,17 +254,19 @@ Ejemplos:\n\
             !strcmp(argv[i], "--output")){
 
                /* open output file */
-               FILE* image = fopen(argv[i+1], "w");
-               int pasoN = 500;
-               if (image == NULL)
-               {
-                  fprintf(stderr, "No se puede abrir el archivo file %s!\n", argv[i+1]);
-                  return -1;
-               }
-
-            /**CASO DE COUT**/
-            if (strcmp(argv[i+1], "-")){
-            }
+							 FILE* image;
+							 int pasoN = 500;
+							 if (!strcmp(argv[i+1], "-")){
+	 								image = stdout;
+	             }
+							 else {
+	               image = fopen(argv[i+1], "w");
+	               if (image == NULL)
+	               {
+	                  fprintf(stderr, "No se puede abrir el archivo file %s!\n", argv[i+1]);
+	                  return -1;
+	               }
+							 }
 
             if(exitCode == 0){
 				exitCode = processImage(resWidth,resHeight,pixelPos,seed,width,height,image,pasoN);
