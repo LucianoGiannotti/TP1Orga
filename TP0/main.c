@@ -14,7 +14,6 @@ typedef struct{
 	double x,y;
 }complex;
 
-
 complex addComplexNumbers(complex a,complex b){
 	complex c;
 	c.x = a.x + b.x;
@@ -41,16 +40,12 @@ int processImage(int resW, int resH,
     int x,y,i;
     int data[resH][resW];
     complex z0,z1;
-    seed.x = -0.726895347709114071439;
-    
+
     for(y=0;y<resH;y++){
         for(x=0;x<resW;x++){
-            // Set initial z value based on current pixel position
-            //ARRANCA
+            // Valor z segun posicion del pixel
             z1.x = pPos.x - w/2 + w/(double)resW/2 + w/(double)resW * x;
             z1.y = pPos.y + h/2 - h/(double)resH/2 - h/(double)resH * y;
-            //NO BORRAR
-
 
             z0.x = 0;
             z0.y = 0;
@@ -58,20 +53,20 @@ int processImage(int resW, int resH,
             for(i=0;i<N-1;i++){
                 z0 = addComplexNumbers(sqrComplex(z1),seed);
                 z1=z0;
-                if ((absComplex(z0) > 2.0)){
+                if (absComplex(z0) > 2.0){
                     break;
                 }
                 i++;
             }
             /* añadir al buffer el brillo */
-            //printf("%i ",i);
             data[y][x] = i;
-            //fprintf(im, "%3d ", data[y][x]);
         }
     }
+
+    //Empezar a imprimir el pgm
     fprintf(im, "P2 \n");
     fprintf(im, "%d %d \n",resW,resH);
-    fprintf(im, "500 \n");
+    fprintf(im, "%d \n", N);
     y = 0;
     while(y < resH)
     {
@@ -79,7 +74,6 @@ int processImage(int resW, int resH,
         while (x < resW)
         {
             fprintf(im, "%3d ", data[y][x]);
-
             x++;
         }
         fprintf(im, "\n");
@@ -93,6 +87,8 @@ int processImage(int resW, int resH,
 
 int main(int argc, char* argv[])
 {
+	int exitCode = 0;
+
     int resWidth;
     int resHeight;
     complex pixelPos;
@@ -143,12 +139,28 @@ Ejemplos:\n\
             !strcmp(argv[i], "--resolution")){
                 if(!argv[i+1]){
                     printf("Error: valor de resolucion ingresado no valido\n");
-                    return 0;
+                    return -1;
                 } else {
                     pSeparator = strtok(argv[i+1],delimitator);
-                    resWidth = atof(pSeparator);
+                    if(pSeparator != NULL){
+                    	resWidth = atof(pSeparator);
+                    	if(resWidth <= 0){
+                    		exitCode = -2;
+                    	}
+                    } else {
+                    	exitCode = -1;
+                    }
+
                     pSeparator = strtok (NULL,delimitator);
-                    resHeight = atof(pSeparator);
+                    if(pSeparator != NULL){
+                    	resHeight = atof(pSeparator);
+                    	if(resHeight <= 0){
+                    		exitCode = -2;
+                    	}
+                    } else {
+                    	exitCode = -1;
+                    }
+
                 }
         }
 
@@ -156,19 +168,32 @@ Ejemplos:\n\
             !strcmp(argv[i], "--center")){
                 if(!argv[i+1]){
                     printf("Error: valor de centro ingresado no valido\n");
-                    return 0;
+                    return -1;
                 } else {
-										char *copy = strdup(argv[i+1]);
-										int sign = 1;
-										if(copy[0] == '-') sign = -1;
+                    char *copy = strdup(argv[i+1]);
+                    if(copy == NULL){
+                        exitCode = -1;
+                    }
+					int sign = 1;
+					if(copy[0] == '-') sign = -1;
+
                     pSeparator = strtok(argv[i+1],delimitator);
-                    pixelPos.x = sign * atof(pSeparator);
-										int len = strlen(pSeparator);
-										if(sign == -1) sign = copy[len + 1] == '-' ? -1 : 1;
-										else sign = copy[len] == '-' ? -1 : 1;
+                    if(pSeparator != NULL){
+                    	pixelPos.x = sign * atof(pSeparator);
+						int len = strlen(pSeparator);
+						if(sign == -1) sign = copy[len + 1] == '-' ? -1 : 1;
+						else sign = copy[len] == '-' ? -1 : 1;
+                    } else {
+                    	exitCode = -1;
+                    }
+
                     pSeparator = strtok (NULL,delimitator);
-                    pixelPos.y = sign * atof(pSeparator);
-										free(copy);
+                    if(pSeparator != NULL){
+                    	pixelPos.y = sign * atof(pSeparator);
+                    } else {
+                    	exitCode = -1;
+                    }
+					free(copy);
                 }
         }
 
@@ -176,7 +201,7 @@ Ejemplos:\n\
             !strcmp(argv[i], "--width")){
                 if(!argv[i+1]){
                     printf("Error: valor de ancho ingresado no valido\n");
-                    return 0;
+                    return -1;
                 } else {
                     width = atof(argv[i+1]);
                 }
@@ -186,7 +211,7 @@ Ejemplos:\n\
             !strcmp(argv[i], "--height")){
                 if(!argv[i+1]){
                     printf("Error: valor de altura ingresado no valido\n");
-                    return 0;
+                    return -1;
                 } else {
                     height = atof(argv[i+1]);
                 }
@@ -196,19 +221,32 @@ Ejemplos:\n\
             !strcmp(argv[i], "--seed")){
                 if(!argv[i+1]){
                     printf("Error: valor de seed ingresado no valido\n");
-                    return 0;
+                    return -1;
                 } else {
-										char *copy = strdup(argv[i+1]);
-										int sign = 1;
-										if(copy[0] == '-') sign = -1;
-										pSeparator = strtok(argv[i+1],delimitator);
-										seed.x = sign * atof(pSeparator);
-										int len = strlen(pSeparator);
-										if(sign == -1) sign = copy[len + 1] == '-' ? -1 : 1;
-										else sign = copy[len] == '-' ? -1 : 1;
-										pSeparator = strtok (NULL,delimitator);
-										seed.y = sign * atof(pSeparator);
-										free(copy);
+                    char *copy = strdup(argv[i+1]);
+					if(copy == NULL){
+                        exitCode = -1;
+                    }
+					int sign = 1;
+					if(copy[0] == '-') sign = -1;
+
+					pSeparator = strtok(argv[i+1],delimitator);
+					if(pSeparator != NULL){
+                        seed.x = sign * atof(pSeparator);
+						int len = strlen(pSeparator);
+						if(sign == -1) sign = copy[len + 1] == '-' ? -1 : 1;
+						else sign = copy[len] == '-' ? -1 : 1;
+                    } else {
+                        exitCode = -1;
+                    }
+
+					pSeparator = strtok (NULL,delimitator);
+					if(pSeparator != NULL){
+                        seed.y = sign * atof(pSeparator);
+                    } else {
+                        exitCode = -1;
+                    }
+					free(copy);
                 }
         }
 
@@ -220,19 +258,33 @@ Ejemplos:\n\
                int pasoN = 500;
                if (image == NULL)
                {
-                  fprintf(stderr, "Can't open output file %s!\n", argv[i+1]);
-                  exit(1);
+                  fprintf(stderr, "No se puede abrir el archivo file %s!\n", argv[i+1]);
+                  return -1;
                }
 
             /**CASO DE COUT**/
             if (strcmp(argv[i+1], "-")){
             }
-            processImage(resWidth,resHeight,pixelPos,seed,width,height,image,pasoN);
+
+            if(exitCode == 0){
+				exitCode = processImage(resWidth,resHeight,pixelPos,seed,width,height,image,pasoN);
+            }
         }
 
      }
 
-
-
+    switch (exitCode){
+    case 0:
+        return exitCode;
+        break;
+    case -1:
+        fprintf(stderr, "La imagen no se pudo procesar, por favor revise los valores ingresados\n");
+        return exitCode;
+        break;
+    case -2:
+        fprintf(stderr, "Valores ingresados de resolucion invalidos\n");
+        return exitCode;
+        break;
+    }
     return 0;
 }
