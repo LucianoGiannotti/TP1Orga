@@ -1,9 +1,11 @@
 \documentclass[a4paper,10pt]{article}
+\usepackage{float}
 \usepackage{graphicx}
 \usepackage[ansinew]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage{listings}
 \inputencoding{latin1}
+\graphicspath{/imagenes}
 
 \title{		\textbf{Trabajo Pr\'{a}ctico 0: \\
 			Infraestructura b\'{a}sica
@@ -26,7 +28,7 @@
 \begin{document}
 \maketitle
 \thispagestyle{empty}   % quita el n�mero en la primer p�gina
-
+\newpage
 
 \section{Objetivos}
 
@@ -60,6 +62,7 @@ $gcc main.c -o tp0
 \end{lstlisting}
 
 Ya que las pruebas son sobre las imágenes, las vamos a realizar a ojo.
+Las imagenes obtenidas por nuestro trabajo se encuentran tambi\'{e}n en formato PNG en la subcarpeta \textit{imagenes}.
 
 \subsection{Caso con los valores por defecto}
 Se obtiene una imagen como la primera figura del enunciado:
@@ -68,13 +71,12 @@ Se obtiene una imagen como la primera figura del enunciado:
 $.\tp0 -o uno.pgm
 \end{lstlisting}
 
-\begin{figure}[!htp]
+\begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.5\textwidth]{uno.png}
-\caption{} \label{}
+\includegraphics[width=0.5\textwidth]{imagenes/uno.png}
+\caption{} \label{uno}
 \end{center}
 \end{figure}
-
 \subsection{Caso de imagen con zoom y otro centro}
 Se obtiene una imagen como la segunda figura del enunciado:
 
@@ -82,22 +84,22 @@ Se obtiene una imagen como la segunda figura del enunciado:
 $ .\tp0 -c 0.282-0.007i -w 0.005 -H 0.005 -o dos.pgm
 \end{lstlisting}
 
-\begin{figure}[!htp]
+\begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.5\textwidth]{dos.png}
-\caption{} \label{}
+\includegraphics[width=0.5\textwidth]{imagenes/dos.png}
+\caption{} \label{dos}
 \end{center}
 \end{figure}
 
-\begin{thebibliography}{99}
+\subsection{Caso de imagen muy angosta}
+En este caso cambiamos la resolucion para obtener una imagen de un pixel
+de alto y 800 de ancho. Es dicil observarla en el informe por lo que decidimos
+no colocarla. Sin embargo el archivo se encuentra en la misma carpeta del TP con el nombre \textit{linea.pgm}.
 
-\bibitem{INT06} Intel Technology \& Research, ``Hyper-Threading Technology,'' 2006, http://www.intel.com/technology/hyperthread/.
+\begin{lstlisting}[frame=single]
+$ .\tp0 -r 800x1 -o linea.pgm
+\end{lstlisting}
 
-\bibitem{HEN00} J. L. Hennessy and D. A. Patterson, ``Computer Architecture. A Quantitative
-Approach,'' 3ra Edici�n, Morgan Kaufmann Publishers, 2000.
 
-\bibitem{LAR92} J. Larus and T. Ball, ``Rewriting Executable Files to Mesure Program Behavior,'' Tech. Report 1083, Univ. of Wisconsin, 1992.
-
-\end{thebibliography}
 
 \end{document}
