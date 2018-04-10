@@ -44,12 +44,10 @@ int processImage(int resW, int resH,
     for(y=0;y<resH;y++){
         for(x=0;x<resW;x++){
             // Valor z segun posicion del pixel
-            z1.x = pPos.x - w/2 + w/(double)resW/2 + w/(double)resW * x;
-            z1.y = pPos.y + h/2 - h/(double)resH/2 - h/(double)resH * y;
-
+            z1.x=pPos.x-w/2+w/(double)resW/2+w/(double)resW*x;
+            z1.y=pPos.y+h/2-h/(double)resH/2-h/(double)resH*y;
             z0.x = 0;
             z0.y = 0;
-
             for(i=0;i<N-1;i++){
                 z0 = addComplexNumbers(sqrComplex(z1),seed);
                 z1=z0;
@@ -57,8 +55,8 @@ int processImage(int resW, int resH,
                     break;
                 }
                 i++;
-            }
-            /* añadir al buffer el brillo */
+            }            
+            //agregar al buffer el brillo
             data[y][x] = i;
         }
     }
@@ -126,8 +124,8 @@ Opciones:\n\
   -h, --help        Informacion acerca de los comandos.\n\
   -r, --resolution  Cambiar resolucion de la imagen.\n\
   -c, --center      Coordenadas correspondientes al punto central.\n\
-  -w, --width       Especifica el ancho de la región del plano complejo por dibujar.\n\
-  -H, --height      Especifica el alto de la región del plano complejo por dibujar.\n\
+  -w, --width       Especifica el ancho de la region del plano complejo por dibujar.\n\
+  -H, --height      Especifica el alto de la region del plano complejo por dibujar.\n\
   -s, --seed        Configurar el valor complejo de la semilla usada para generar el fractal.\n\
   -o, --output      Colocar la imagen de salida.\n\
 Ejemplos:\n\

@@ -3,3 +3,4 @@
 ./tp0 -w 1 -H 1 -o tres.pgm
 ./tp0 -r 8x6 -o cuatro.pgm
 ./tp0 -s -0.157-1.041i -o cinco.pgm
+./tp0 -r 800x1 -o seis.pgm
