@@ -20,4 +20,9 @@ mips32_plot:
 
         # TODA LA FUNCION
 
-        
+return:
+        lw ra, 72(sp)
+        lw $fp, 68(sp)
+        lw gp, 64(sp)
+        addu sp, sp, 80
+        jr ra
