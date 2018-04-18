@@ -19,23 +19,23 @@ mips32_plot(param_t *parms)
 	fprintf(parms->fp, "%u\n", (unsigned)parms->y_res);
 	fprintf(parms->fp, "%u\n", (unsigned)(parms->shades - 1));
 
-	/* 
-	 * Barremos la región rectangular del plano complejo comprendida 
+	/*
+	 * Barremos la regiï¿½n rectangular del plano complejo comprendida
 	 * entre (parms->UL_re, parms->UL_im) y (parms->LR_re, parms->LR_im).
-	 * El parámetro de iteración es el punto (cr, ci).
+	 * El parï¿½metro de iteraciï¿½n es el punto (cr, ci).
 	 */
-	for (y = 0, ci = parms->UL_im; 
-	     y < parms->y_res; 
+	for (y = 0, ci = parms->UL_im;
+	     y < parms->y_res;
 	     ++y, ci -= parms->d_im) {
-		for (x = 0, cr = parms->UL_re; 
-		     x < parms->x_res; 
+		for (x = 0, cr = parms->UL_re;
+		     x < parms->x_res;
 		     ++x, cr += parms->d_re) {
 			zr = cr;
 			zi = ci;
 
 			/*
 			 * Determinamos el nivel de brillo asociado al punto
-			 * (cr, ci), usando la fórmula compleja recurrente 
+			 * (cr, ci), usando la fï¿½rmula compleja recurrente
 			 * f = f^2 + s.
 			 */
 			for (c = 0; c < parms->shades; ++c) {

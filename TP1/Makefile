@@ -1,7 +1,7 @@
 # Do not edit -- this file documents how this program was built for your machine.
 SYSTYPE	= LINUX4
 SYSLIBS	= -lm
-CC	= gcc $(WARN) 
+CC	= gcc $(WARN)
 OPT	= -O
 DEBUG	= -g
 EXPORT	= AUXLIBS='' CCARGS='' OPT='-O' DEBUG='-g'
@@ -11,7 +11,7 @@ DEFS    = -I. -D$(SYSTYPE)
 CFLAGS  = $(DEBUG) $(OPT) $(DEFS)
 OPTS	= 'CC=$(CC)'
 HDRS    = debug.h defs.h mygetopt.h param.h
-SRCS	= mips32_plot.c main.c mygetopt_long.c
+SRCS	= mips32_plot.S main.c mygetopt_long.c
 PROG	= tp1
 
 $(PROG): $(SRCS) $(HDRS)
