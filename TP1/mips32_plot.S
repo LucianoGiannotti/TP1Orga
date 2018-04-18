@@ -17,13 +17,14 @@ mips32_plot:
           sw ra, 72(sp)
           move $fp, sp
           sw a0, 80($fp)                                # Fin de creacion de SF
-          lw t0, 44(a0)                                 # Obtengo dir de fp en t1
-          addiu t0, t0, 14                              # Obtengo dir de fd en t1
-          sh t0, 16($fp)                                # Salvo fd
+          lw t0, 44(a0)                                 # Obtengo dir de fp en t0
+          addiu t0, t0, 14                              # Obtengo dir de fd en t0
+          lh t0, 0(t0)                                  # Obtengo fd
+          sw t0, 16($fp)                                # Salvo fd
           la a0, head_pgm
           jal my_strlen
           move a2, v0                                   # Cargo len(head_pgm)
-          lh a0, 16($fp)                                # Cargo fd
+          lw a0, 16($fp)                                # Cargo fd
           la a1, head_pgm                               # Cargo head_pgm
           jal my_fprintf                                # Escribo "P2"
 
@@ -74,7 +75,7 @@ my_fprintf:
           sw $fp, 28(sp)
           sw ra, 32(sp)
           move $fp, sp
-          sh a0, 40($fp)
+          sw a0, 40($fp)
           sw a1, 44($fp)
           sw a2, 48($fp)                                # Fin de creacion de SF
           move t0, zero                                 # n = 0
@@ -89,7 +90,7 @@ add_total:
           sw t0, 16($fp)
           sw t1, 20($fp)
 test_write:
-          lh a0, 40($fp)                                # Cargo fd
+          lw a0, 40($fp)                                # Cargo fd
           lw t3, 44($fp)
           lw t2, 48($fp)
           lw t1, 20($fp)
@@ -113,6 +114,6 @@ test_write:
           .align 2
 msgs:     .word head_pgm, msg_1, msg_2
           .align 0
-head_pgm: .asciiz "P2"
-msg_1:    .asciiz "i/o error."
-msg_2:    .asciiz "cannot flush output file."
+head_pgm: .asciiz "P2\n"
+msg_1:    .asciiz "i/o error.\n"
+msg_2:    .asciiz "cannot flush output file.\n"
