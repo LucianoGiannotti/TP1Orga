@@ -67,6 +67,107 @@ mips32_plot:
           li a2, 1                                      # Cargo len("\n")
           jal my_fprintf                                # Imprimo "\n"
 
+          # QUILOMBO DE FOR'S
+
+          move t0, zero
+          sw t0, 20($fp)                                # Salvo y
+          lw t1, 80($fp)
+          lwc1 $f20, 4(t1)                              # Obtengo UL_im
+          swc1 $f20, 36($fp)                            # Salvo ci = UL_im
+          b test_for1
+for1:
+          move t0, zero
+          sw t0, 24($fp)                                # Salvo x
+          lw t1, 80($fp)
+          lwc1 $f20, 0(t1)                              # Obtengo UL_re
+          swc1 $f20, 32($fp)                            # Salvo cr = UL_im
+          b test_for2
+for2:
+          lwc1 $f20, 32($fp)                            # Obtengo cr
+          swc1 $f20, 40($fp)                            # Salvo zr = cr
+          lwc1 $f20, 36($fp)                            # Obtengo ci
+          swc1 $f20, 44($fp)                            # Salvo zi = ci
+
+          move t0, zero
+          sw t0, 28($fp)                                # Salvo c
+          b test_for3
+for3:
+          lwc1 $f20, 40($fp)                            # Obtengo zr
+          lwc1 $f22, 44($fp)                            # Obtengo zi
+          mul.s $f24, $f20, $f20                        # zr * zr
+          mul.s $f26, $f22, $f22                        # zi * zi
+          add.s $f28, $f24, $f26                        # zr * zr + zi * zi
+          li.s $f30, 4
+          c.le.s $f30, $f28                             # 4 <= absz
+          bc1t print_pixel                              # break
+
+          lw t1, 80($fp)
+          lwc1 $f30, 24(t1)                             # Obtengo s_re
+          add.s $f30, $f30, $f24                        # s_re + zr * zr
+          sub.s $f30, $f30, $f26                        # s_re + zr * zr - zi * zi
+          lw t1, 80($fp)
+          lwc1 $f24, 28(t1)                             # Obtengo s_im
+          mul.s $f26, $f20, $f22                        # zr * zi
+          li.s $f20, 2
+          mul.s $f26, $f26, $f20                        # zr * zi * 2
+          add.s $f22, $f24, $f26                        # s_im + zr * zi * 2
+          swc1 $f30, 40($fp)                            # zr = tr
+          swc1 $f22, 44($fp)                            # zi = ti
+
+          lw t0, 28($fp)                                # Obtengo c
+          addiu t0, t0, 1                               # ++c
+          sw t0, 28($fp)                                # Salvo c
+test_for3:
+          lw t0, 80($fp)
+          lw t0, 40(t0)                                 # Obtengo shades
+          lw t1, 28($fp)                                # Obtengo c
+          subu t2, t0, t1                               # shades - c
+          bgtz t2, for3
+
+print_pixel:
+          lw a0, 28($fp)                                # Obtengo c
+          jal int_to_str                                # c -> str
+          la a0, number
+          jal my_strlen
+          move a2, v0                                   # Cargo len(number)
+          lw a0, 16($fp)                                # Cargo fd
+          la a1, number                                 # Cargo number
+          jal my_fprintf                                # Imprimo "c"
+          lw a0, 16($fp)                                # Cargo fd
+          la a1, new_line                               # Cargo "\n"
+          li a2, 1                                      # Cargo len("\n")
+          jal my_fprintf                                # Imprimo "\n"
+
+          lw t0, 24($fp)                                # Obtengo x
+          addiu t0, t0, 1                               # ++x
+          sw t0, 24($fp)                                # Salvo x
+          lwc1 $f20, 32($fp)                            # Obtengo cr
+          lw t2, 80($fp)
+          lwc1 $f22, 16(t2)                             # Obtengo d_re
+          add.s $f20, $f20, $f22                        # cr += d_re
+          swc1 $f20, 32($fp)                            # Salvo cr
+test_for2:
+          lw t0, 80($fp)
+          lw t0, 32(t0)                                 # Obtengo x_res
+          lw t1, 24($fp)                                # Obtengo x
+          subu t2, t0, t1                               # x_res - x
+          bgtz t2, for2
+
+          lw t0, 20($fp)                                # Obtengo y
+          addiu t0, t0, 1                               # ++y
+          sw t0, 20($fp)                                # Salvo y
+          lwc1 $f20, 36($fp)                            # Obtengo ci
+          lw t2, 80($fp)
+          lwc1 $f22, 20(t2)                             # Obtengo d_im
+          sub.s $f20, $f20, $f22                        # ci -= d_im
+          swc1 $f20, 36($fp)                            # Salvo ci
+test_for1:
+          lw t0, 80($fp)
+          lw t0, 36(t0)                                 # Obtengo y_res
+          lw t1, 20($fp)                                # Obtengo y
+          subu t2, t0, t1                               # y_res - y
+          bgtz t2, for1
+
 return:
           lw ra, 72(sp)
           lw $fp, 68(sp)
