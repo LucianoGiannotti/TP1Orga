@@ -38,8 +38,11 @@ int processImage(int resW, int resH,
                  FILE* im, int N){
 
     int x,y,i;
-    int data[resH][resW];
     complex z0,z1;
+
+		fprintf(im, "P2 \n");
+    fprintf(im, "%d %d \n",resW,resH);
+    fprintf(im, "%d \n", N);
 
     for(y=0;y<resH;y++){
         for(x=0;x<resW;x++){
@@ -55,27 +58,11 @@ int processImage(int resW, int resH,
                     break;
                 }
                 i++;
-            }            
+            }
             //agregar al buffer el brillo
-            data[y][x] = i;
+            fprintf(im, "%3d ", i);
         }
-    }
-
-    //Empezar a imprimir el pgm
-    fprintf(im, "P2 \n");
-    fprintf(im, "%d %d \n",resW,resH);
-    fprintf(im, "%d \n", N);
-    y = 0;
-    while(y < resH)
-    {
-        x = 0;
-        while (x < resW)
-        {
-            fprintf(im, "%3d ", data[y][x]);
-            x++;
-        }
-        fprintf(im, "\n");
-        y++;
+				fprintf(im, "\n");
     }
 
    /* close the file */
