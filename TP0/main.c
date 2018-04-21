@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <ctype.h>
 
 #define DEFAULT_WIDTH_RES 640;
 #define DEFAULT_HEIGHT_RES 480;
@@ -81,9 +80,32 @@ int isValidNumber(char* arg) {
 
 int isValidRes(char* arg) {
 	for(int i = 0; arg[i] != '\0'; i++) {
-		if(arg[i] < 48 || arg[i] > 57) {
-			if(arg[i] == 120) {
+		if(arg[i] < '0' || arg[i] > '9') {
+			if(arg[i] == 'x') {
 				if(i == 0 || arg[i+1] == '\0') return 0;
+				continue;
+			}
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int isValidComplex(char* arg) {
+	for(int i = 0; arg[i] != '\0'; i++) {
+		if(arg[i] < '0' || arg[i] > '9') {
+			if(arg[i] == 'i') {
+				if(arg[i+1] != '\0') return 0;
+				continue;
+			}
+
+			else if(arg[i] == '+') {
+				if(arg[i+1] == '\0' || arg[i+1] == '-' || arg[i+1] == 'i') return 0;
+				continue;
+			}
+
+			else if(arg[i] == '-') {
+				if(arg[i+1] == '\0' || arg[i+1] == '+' || arg[i+1] == 'i') return 0;
 				continue;
 			}
 			return 0;
@@ -172,7 +194,7 @@ Ejemplos:\n\
 		}
 
 		if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--center")){
-			if(!argv[i+1]){
+			if(!argv[i+1] || !isValidComplex(argv[i+1])){
 				printf("Error: valor de centro ingresado no valido\n");
         return -1;
       } else {
@@ -222,7 +244,7 @@ Ejemplos:\n\
 		}
 
 		if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--seed")){
-			if(!argv[i+1]){
+			if(!argv[i+1] || !isValidComplex(argv[i+1])){
 				printf("Error: valor de seed ingresado no valido\n");
 				return -1;
 			} else {
