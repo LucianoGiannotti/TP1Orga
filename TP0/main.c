@@ -72,6 +72,7 @@ int processImage(int resW, int resH,
 
 int main(int argc, char* argv[]){
 	int exitCode = 0;
+	int pasoN = 500;
 
   int resWidth;
   int resHeight;
@@ -79,6 +80,7 @@ int main(int argc, char* argv[]){
   double width;
   double height;
   complex seed;
+	FILE* image = stdout;
 
   const char* delRes = "x";
 	const char* delimitator = "+-i";
@@ -230,12 +232,9 @@ Ejemplos:\n\
 		}
 
 		if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--output")){
-
 			/* open output file */
-			FILE* image;
-			int pasoN = 500;
 			if (!strcmp(argv[i+1], "-")){
-				image = stdout;
+				continue;
 			}
 			else {
 				image = fopen(argv[i+1], "w");
@@ -244,11 +243,11 @@ Ejemplos:\n\
 					return -1;
 				}
 			}
-
-			if(exitCode == 0) {
-				exitCode = processImage(resWidth,resHeight,pixelPos,seed,width,height,image,pasoN);
-			}
 		}
+	}
+
+	if(exitCode == 0) {
+		exitCode = processImage(resWidth,resHeight,pixelPos,seed,width,height,image,pasoN);
 	}
 
 	switch (exitCode){
