@@ -145,7 +145,7 @@ int main(int argc, char* argv[]){
               \n\nIntegrantes:\n Fabrizio Cozza\n Kevin Cajachuán\n Luciano Giannotti\n");
       return 0;
 		}
-    if (((!strcmp(argv[i],"-h"))) || ((!strcmp(argv[i],"--help")))){
+    else if (((!strcmp(argv[i],"-h"))) || ((!strcmp(argv[i],"--help")))){
       printf("\
 Uso:\n\
   tp0 -h\n\
@@ -165,7 +165,7 @@ Ejemplos:\n\
       return 0;
 		}
 
-    if (!strcmp(argv[i], "-r") || !strcmp(argv[i], "--resolution")){
+    else if (!strcmp(argv[i], "-r") || !strcmp(argv[i], "--resolution")){
 			if(!argv[i+1] || !isValidRes(argv[i+1])){
       	printf("Error: valor de resolucion ingresado no valido\n");
       	return -1;
@@ -189,11 +189,11 @@ Ejemplos:\n\
       	} else {
       		exitCode = -1;
         }
-
+				i++;
 			}
 		}
 
-		if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--center")){
+		else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--center")){
 			if(!argv[i+1] || !isValidComplex(argv[i+1])){
 				printf("Error: valor de centro ingresado no valido\n");
         return -1;
@@ -222,28 +222,31 @@ Ejemplos:\n\
           exitCode = -1;
         }
 				free(copy);
+				i++;
   		}
 		}
 
-		if (!strcmp(argv[i], "-w") || !strcmp(argv[i], "--width")){
+		else if (!strcmp(argv[i], "-w") || !strcmp(argv[i], "--width")){
 			if(!argv[i+1] || !isValidNumber(argv[i+1])){
 				printf("Error: valor de ancho ingresado no valido\n");
 				return -1;
 			} else {
 				width = atof(argv[i+1]);
+				i++;
 			}
 		}
 
-		if (!strcmp(argv[i], "-H") || !strcmp(argv[i], "--height")){
+		else if (!strcmp(argv[i], "-H") || !strcmp(argv[i], "--height")){
 			if(!argv[i+1] || !isValidNumber(argv[i+1])){
 				printf("Error: valor de altura ingresado no valido\n");
 				return -1;
 			} else {
 				height = atof(argv[i+1]);
+				i++;
 			}
 		}
 
-		if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--seed")){
+		else if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--seed")){
 			if(!argv[i+1] || !isValidComplex(argv[i+1])){
 				printf("Error: valor de seed ingresado no valido\n");
 				return -1;
@@ -272,10 +275,11 @@ Ejemplos:\n\
   				exitCode = -1;
 				}
 				free(copy);
+				i++;
 			}
 		}
 
-		if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--output")){
+		else if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--output")){
 			/* open output file */
 			if(!argv[i+1]){
 				printf("Error: debe ingresar un archivo de salida\n");
@@ -289,7 +293,13 @@ Ejemplos:\n\
 					fprintf(stderr, "No se puede abrir el archivo file %s!\n", argv[i+1]);
 					return -1;
 				}
+				i++;
 			}
+		}
+
+		else {
+			fprintf(stderr, "Error: opcion invalida\n");
+			return -1;
 		}
 	}
 
