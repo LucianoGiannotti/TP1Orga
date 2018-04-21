@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 
 #define DEFAULT_WIDTH_RES 640;
 #define DEFAULT_HEIGHT_RES 480;
@@ -69,6 +70,27 @@ int processImage(int resW, int resH,
 	return fclose(im);
 }
 
+int isValidNumber(char* arg) {
+	for(int i = 0; arg[i] != '\0'; i++) {
+		if(arg[i] < 48 || arg[i] > 57) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int isValidRes(char* arg) {
+	for(int i = 0; arg[i] != '\0'; i++) {
+		if(arg[i] < 48 || arg[i] > 57) {
+			if(arg[i] == 120) {
+				if(i == 0 || arg[i+1] == '\0') return 0;
+				continue;
+			}
+			return 0;
+		}
+	}
+	return 1;
+}
 
 int main(int argc, char* argv[]){
 	int exitCode = 0;
@@ -122,7 +144,7 @@ Ejemplos:\n\
 		}
 
     if (!strcmp(argv[i], "-r") || !strcmp(argv[i], "--resolution")){
-			if(!argv[i+1]){
+			if(!argv[i+1] || !isValidRes(argv[i+1])){
       	printf("Error: valor de resolucion ingresado no valido\n");
       	return -1;
       } else {
@@ -182,7 +204,7 @@ Ejemplos:\n\
 		}
 
 		if (!strcmp(argv[i], "-w") || !strcmp(argv[i], "--width")){
-			if(!argv[i+1]){
+			if(!argv[i+1] || !isValidNumber(argv[i+1])){
 				printf("Error: valor de ancho ingresado no valido\n");
 				return -1;
 			} else {
@@ -191,7 +213,7 @@ Ejemplos:\n\
 		}
 
 		if (!strcmp(argv[i], "-H") || !strcmp(argv[i], "--height")){
-			if(!argv[i+1]){
+			if(!argv[i+1] || !isValidNumber(argv[i+1])){
 				printf("Error: valor de altura ingresado no valido\n");
 				return -1;
 			} else {
@@ -233,7 +255,10 @@ Ejemplos:\n\
 
 		if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--output")){
 			/* open output file */
-			if (!strcmp(argv[i+1], "-")){
+			if(!argv[i+1]){
+				printf("Error: debe ingresar un archivo de salida\n");
+				return -1;
+			} else if (!strcmp(argv[i+1], "-")){
 				continue;
 			}
 			else {
