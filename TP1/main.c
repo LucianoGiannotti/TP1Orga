@@ -25,9 +25,10 @@
 
 static void do_plot(void);
 extern void mips32_plot(param_t *);
+extern void c_plot(param_t *);
 
 /*
- * Parámetros globales.
+ * Parï¿½metros globales.
  */
 
 int x_res = 640;		/* Ancho de imagen por defecto. */
@@ -78,7 +79,7 @@ parse_cmdline(int argc, char * const argv[])
 		{"output", required_argument, NULL, 'o'},
 	};
 
-	while ((ch = getopt_long(argc, argv, 
+	while ((ch = getopt_long(argc, argv,
 	                         "hc:H:m:o:r:w:g:V", options, &index)) != -1) {
 		switch (ch) {
 		case 'h':
@@ -114,7 +115,7 @@ parse_cmdline(int argc, char * const argv[])
 	}
 
 	if (plot == NULL)
-		plot = &mips32_plot;
+		plot = &c_plot;
 
 	if (output == NULL)
 		output = stdout;
@@ -186,8 +187,8 @@ do_geometry(const char *name, const char *spec)
 #define PLUS_OR_MINUS(c)  ((c) == '+' || (c) == '-')
 #define IMAGINARY_UNIT(x) ((x) == 'i' || (x) == 'j')
 
-	if (sscanf(spec, 
-	           "%lf %c %lf %c %c %lf %c %lf %c %c", 
+	if (sscanf(spec,
+	           "%lf %c %lf %c %c %lf %c %lf %c %c",
 	           &re_1,
 	           &sg_1,
 	           &im_1,
@@ -216,7 +217,7 @@ do_geometry(const char *name, const char *spec)
 	im_2 *= SIGN(sg_2);
 
 	/*
-	 * We have two edges of the rectangle. Now, find the upper-left 
+	 * We have two edges of the rectangle. Now, find the upper-left
 	 * (i.e. the one with minimum real part and maximum imaginary
 	 * part) and lower-right (maximum real part, minimum imaginary)
 	 * corners of the rectangle.
@@ -237,8 +238,8 @@ do_center(const char *name, const char *spec)
 	char sg;
 	char ch;
 
-	if (sscanf(spec, 
-	           "%lf %c %lf %c %c", 
+	if (sscanf(spec,
+	           "%lf %c %lf %c %c",
 	           &re,
 	           &sg,
 	           &im,
@@ -268,8 +269,8 @@ do_height(const char *name, const char *spec)
 	double re, im;
 	char ch;
 
-	if (sscanf(spec, 
-	           "%lf %c", 
+	if (sscanf(spec,
+	           "%lf %c",
 	           &height,
 	           &ch) != 1
 	    || height <= 0.0) {
@@ -295,8 +296,8 @@ do_width(const char *name, const char *spec)
 	double re, im;
 	char ch;
 
-	if (sscanf(spec, 
-	           "%lf %c", 
+	if (sscanf(spec,
+	           "%lf %c",
 	           &width,
 	           &ch) != 1
 	    || width <= 0.0) {
@@ -317,8 +318,12 @@ do_width(const char *name, const char *spec)
 static void
 do_method(const char *name, const char *spec)
 {
-	fprintf(stderr, "do_method: notyet\n");
-	exit(1);
+	if(strcmp(spec, "mips32") == 0) plot = &mips32_plot;
+
+	else if(strcmp(spec, "generic") != 0) {
+		fprintf(stderr, "-m generic or -m mips32\n");
+		exit(1);
+	}
 }
 
 static void
