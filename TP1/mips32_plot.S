@@ -7,16 +7,16 @@
           .globl mips32_plot
           .ent mips32_plot
 mips32_plot:
-          .frame $fp, 80, ra
+          .frame $fp, 64, ra
           .set noreorder
           .cpload t9
           .set reorder
-          subu sp, sp, 80
-          .cprestore 64
-          sw $fp, 68(sp)
-          sw ra, 72(sp)
+          subu sp, sp, 64
+          .cprestore 48
+          sw $fp, 52(sp)
+          sw ra, 56(sp)
           move $fp, sp
-          sw a0, 80($fp)                                # Fin de creacion de SF
+          sw a0, 64($fp)                                # Fin de creacion de SF
           lw t0, 44(a0)                                 # Obtengo dir de fp en t0
           lh t0, 14(t0)                                 # Obtengo fd
           sw t0, 16($fp)                                # Salvo fd
@@ -26,7 +26,7 @@ mips32_plot:
           lw a0, 16($fp)                                # Cargo fd
           la a1, head_pgm                               # Cargo head_pgm
           jal my_fprintf                                # Imprimo "P2"
-          lw t0, 80($fp)
+          lw t0, 64($fp)
           lw a0, 32(t0)                                 # Cargo x_res
           jal int_to_str                                # x_res -> str
           la a0, number
@@ -39,7 +39,7 @@ mips32_plot:
           la a1, new_line                               # Cargo "\n"
           li a2, 1                                      # Cargo len("\n")
           jal my_fprintf                                # Imprimo "\n"
-          lw t0, 80($fp)
+          lw t0, 64($fp)
           lw a0, 36(t0)                                 # Cargo y_res
           jal int_to_str                                # y_res -> str
           la a0, number
@@ -52,7 +52,7 @@ mips32_plot:
           la a1, new_line                               # Cargo "\n"
           li a2, 1                                      # Cargo len("\n")
           jal my_fprintf                                # Imprimo "\n"
-          lw t0, 80($fp)
+          lw t0, 64($fp)
           lw a0, 40(t0)                                 # Cargo shades
           subu a0, a0, 1                                # shades-1
           jal int_to_str                                # shades-1 -> str
@@ -67,18 +67,16 @@ mips32_plot:
           li a2, 1                                      # Cargo len("\n")
           jal my_fprintf                                # Imprimo "\n"
 
-          # QUILOMBO DE FOR'S
-
           move t0, zero
           sw t0, 20($fp)                                # Salvo y
-          lw t1, 80($fp)
+          lw t1, 64($fp)
           lwc1 $f20, 4(t1)                              # Obtengo UL_im
           swc1 $f20, 36($fp)                            # Salvo ci = UL_im
           b test_for1
 for1:
           move t0, zero
           sw t0, 24($fp)                                # Salvo x
-          lw t1, 80($fp)
+          lw t1, 64($fp)
           lwc1 $f20, 0(t1)                              # Obtengo UL_re
           swc1 $f20, 32($fp)                            # Salvo cr = UL_im
           b test_for2
@@ -101,11 +99,11 @@ for3:
           c.le.s $f30, $f28                             # 4 <= absz
           bc1t print_pixel                              # break
 
-          lw t1, 80($fp)
+          lw t1, 64($fp)
           lwc1 $f30, 24(t1)                             # Obtengo s_re
           add.s $f30, $f30, $f24                        # s_re + zr * zr
           sub.s $f30, $f30, $f26                        # s_re + zr * zr - zi * zi
-          lw t1, 80($fp)
+          lw t1, 64($fp)
           lwc1 $f24, 28(t1)                             # Obtengo s_im
           mul.s $f26, $f20, $f22                        # zr * zi
           li.s $f20, 2
@@ -118,7 +116,7 @@ for3:
           addiu t0, t0, 1                               # ++c
           sw t0, 28($fp)                                # Salvo c
 test_for3:
-          lw t0, 80($fp)
+          lw t0, 64($fp)
           lw t0, 40(t0)                                 # Obtengo shades
           lw t1, 28($fp)                                # Obtengo c
           subu t2, t0, t1                               # shades - c
@@ -142,12 +140,12 @@ print_pixel:
           addiu t0, t0, 1                               # ++x
           sw t0, 24($fp)                                # Salvo x
           lwc1 $f20, 32($fp)                            # Obtengo cr
-          lw t2, 80($fp)
+          lw t2, 64($fp)
           lwc1 $f22, 16(t2)                             # Obtengo d_re
           add.s $f20, $f20, $f22                        # cr += d_re
           swc1 $f20, 32($fp)                            # Salvo cr
 test_for2:
-          lw t0, 80($fp)
+          lw t0, 64($fp)
           lw t0, 32(t0)                                 # Obtengo x_res
           lw t1, 24($fp)                                # Obtengo x
           subu t2, t0, t1                               # x_res - x
@@ -157,22 +155,22 @@ test_for2:
           addiu t0, t0, 1                               # ++y
           sw t0, 20($fp)                                # Salvo y
           lwc1 $f20, 36($fp)                            # Obtengo ci
-          lw t2, 80($fp)
+          lw t2, 64($fp)
           lwc1 $f22, 20(t2)                             # Obtengo d_im
           sub.s $f20, $f20, $f22                        # ci -= d_im
           swc1 $f20, 36($fp)                            # Salvo ci
 test_for1:
-          lw t0, 80($fp)
+          lw t0, 64($fp)
           lw t0, 36(t0)                                 # Obtengo y_res
           lw t1, 20($fp)                                # Obtengo y
           subu t2, t0, t1                               # y_res - y
           bgtz t2, for1
 
 return:
-          lw ra, 72(sp)
-          lw $fp, 68(sp)
-          lw gp, 64(sp)
-          addu sp, sp, 80
+          lw ra, 56(sp)
+          lw $fp, 52(sp)
+          lw gp, 48(sp)
+          addu sp, sp, 64
           jr ra
           .end mips32_plot
           .size mips32_plot, .-mips32_plot
@@ -218,7 +216,7 @@ dig_to_char:
           sw a1, 44($fp)
           sw a2, 48($fp)                                # Fin de creacion de SF
           beqz a0, return_dig
-          remu t0, a0, 10
+          remu t0, a0, 10                               # r = n % 10
           sw t0, 16($fp)
           divu a0, a0, 10
           jal dig_to_char
@@ -337,11 +335,9 @@ test_write:
 
           .rdata
           .align 2
-msgs:     .word head_pgm, msg_1, msg_2, new_line
+msgs:     .word head_pgm, new_line
           .align 0
 head_pgm: .asciiz "P2\n"
-msg_1:    .asciiz "i/o error.\n"
-msg_2:    .asciiz "cannot flush output file.\n"
 new_line: .asciiz "\n"
 
           .data
