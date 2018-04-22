@@ -40,9 +40,18 @@ int processImage(int resW, int resH,
 	int x,y,i;
   complex z0,z1;
 
-	fprintf(im, "P2 \n");
-  fprintf(im, "%d %d \n",resW,resH);
-  fprintf(im, "%d \n", N);
+    if(fprintf(im, "P2 \n") < 0){
+        perror("Error impreso por perror");
+        return -1;
+    }
+    if(fprintf(im, "%d %d \n",resW,resH) < 0){
+        perror("Error impreso por perror");
+        return -1;
+    }
+    if(fprintf(im, "%d \n", N) < 0){
+        perror("Error impreso por perror");
+        return -1;
+    }
 
   for(y=0;y<resH;y++){
   	for(x=0;x<resW;x++){
@@ -60,9 +69,15 @@ int processImage(int resW, int resH,
         i++;
     	}
       //agregar al buffer el brillo
-      fprintf(im, "%3d ", i);
+      if(fprintf(im, "%3d ", i) < 0){
+            perror("Error impreso por perror");
+            return -1;
+      }
     }
-		fprintf(im, "\n");
+		if(fprintf(im, "\n") < 0){
+             perror("Error impreso por perror");
+             return -1;
+		}
 	}
 
 	/* close the file */
@@ -71,7 +86,8 @@ int processImage(int resW, int resH,
 
 int isValidNumber(char* arg) {
 	for(int i = 0; arg[i] != '\0'; i++) {
-		if(arg[i] < 48 || arg[i] > 57) {
+        // CERO Y NUEVE RESPECTIVAMENTE
+		if((arg[i] < 48) || (arg[i] > 57)) {
 			return 0;
 		}
 	}
@@ -173,21 +189,17 @@ Ejemplos:\n\
         pSeparator = strtok(argv[i+1],delRes);
         if(pSeparator != NULL){
         	resWidth = atof(pSeparator);
-          if(resWidth <= 0){
-          	exitCode = -2;
-          }
         } else {
         	exitCode = -1;
+        	perror("Error impreso por perror");
         }
 
-				pSeparator = strtok (NULL,delRes);
-				if(pSeparator != NULL){
+        pSeparator = strtok (NULL,delRes);
+        if(pSeparator != NULL){
         	resHeight = atof(pSeparator);
-          if(resHeight <= 0){
-          	exitCode = -2;
-          }
       	} else {
       		exitCode = -1;
+      		perror("Error impreso por perror");
         }
 				i++;
 			}
@@ -201,6 +213,7 @@ Ejemplos:\n\
         char *copy = strdup(argv[i+1]);
         if(copy == NULL){
         	exitCode = -1;
+        	perror("Error impreso por perror");
         }
 				int sign = 1;
 				if(copy[0] == '-') sign = -1;
@@ -213,6 +226,7 @@ Ejemplos:\n\
 					else sign = copy[len] == '-' ? -1 : 1;
       	} else {
           exitCode = -1;
+          perror("Error impreso por perror");
         }
 
         pSeparator = strtok (NULL,delimitator);
@@ -220,6 +234,7 @@ Ejemplos:\n\
         	pixelPos.y = sign * atof(pSeparator);
         } else {
           exitCode = -1;
+          perror("Error impreso por perror");
         }
 				free(copy);
 				i++;
@@ -254,6 +269,7 @@ Ejemplos:\n\
 				char *copy = strdup(argv[i+1]);
 				if(copy == NULL){
 					exitCode = -1;
+					perror("Error impreso por perror");
 				}
 				int sign = 1;
 				if(copy[0] == '-') sign = -1;
@@ -266,6 +282,7 @@ Ejemplos:\n\
 					else sign = copy[len] == '-' ? -1 : 1;
 				} else {
 					exitCode = -1;
+					perror("Error impreso por perror");
 				}
 
 				pSeparator = strtok (NULL,delimitator);
@@ -273,6 +290,7 @@ Ejemplos:\n\
   				seed.y = sign * atof(pSeparator);
 				} else {
   				exitCode = -1;
+  				perror("Error impreso por perror");
 				}
 				free(copy);
 				i++;
@@ -290,15 +308,21 @@ Ejemplos:\n\
 			else {
 				image = fopen(argv[i+1], "w");
 				if (image == NULL) {
-					fprintf(stderr, "No se puede abrir el archivo file %s!\n", argv[i+1]);
+					if(fprintf(stderr, "No se puede abrir el archivo file %s!\n", argv[i+1]) < 0){
+                        exitCode = -1;
+                        perror("Error impreso por perror");
+					}
+					perror("Error impreso por perror");
 					return -1;
 				}
 				i++;
 			}
-		}
-
-		else {
-			fprintf(stderr, "Error: opcion invalida\n");
+		} else {
+			if(fprintf(stderr, "Error: opcion invalida\n") < 0){
+                exitCode = -1;
+                perror("Error impreso por perror");
+			}
+			perror("Error impreso por perror");
 			return -1;
 		}
 	}
@@ -307,18 +331,9 @@ Ejemplos:\n\
 		exitCode = processImage(resWidth,resHeight,pixelPos,seed,width,height,image,pasoN);
 	}
 
-	switch (exitCode){
-		case 0:
-			return exitCode;
-			break;
-		case -1:
-			fprintf(stderr, "La imagen no se pudo procesar, por favor revise los valores ingresados\n");
-			return exitCode;
-			break;
-		case -2:
-			fprintf(stderr, "Valores ingresados de resolucion invalidos\n");
-			return exitCode;
-			break;
+	if(exitCode == EOF){
+        perror("Error impreso por perror despues de procesar la imagen");
 	}
-	return 0;
+
+	return exitCode;
 }
