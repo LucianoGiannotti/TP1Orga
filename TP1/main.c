@@ -47,6 +47,7 @@ static void do_usage(const char *, int);
 static void do_version(const char *);
 static void do_resolution(const char *, const char *);
 static void do_geometry(const char *, const char *);
+static void do_seed(const char *, const char *);
 static void do_center(const char *, const char *);
 static void do_width(const char *, const char *);
 static void do_height(const char *, const char *);
@@ -69,6 +70,7 @@ parse_cmdline(int argc, char * const argv[])
 	int index = 0;
 
 	struct option options[] = {
+		{"method", required_argument, NULL, 'm'},
 		{"help", no_argument, NULL, 'h'},
 		{"version", no_argument, NULL, 'V'},
 		{"geometry", required_argument, NULL, 'g'},
@@ -76,11 +78,12 @@ parse_cmdline(int argc, char * const argv[])
 		{"center", required_argument, NULL, 'c'},
 		{"width", required_argument, NULL, 'w'},
 		{"height", required_argument, NULL, 'H'},
+		{"seed", required_argument, NULL, 's'},
 		{"output", required_argument, NULL, 'o'},
 	};
 
 	while ((ch = getopt_long(argc, argv,
-	                         "hc:H:m:o:r:w:g:V", options, &index)) != -1) {
+	                         "hc:H:s:m:o:r:w:g:V", options, &index)) != -1) {
 		switch (ch) {
 		case 'h':
 			do_usage(argv[0], 0);
@@ -106,6 +109,9 @@ parse_cmdline(int argc, char * const argv[])
 		case 'm':
 			do_method(argv[0], optarg);
 			break;
+		case 's':
+			do_seed(argv[0], optarg);
+			break;
 		case 'o':
 			do_output(argv[0], optarg);
 			break;
@@ -129,6 +135,8 @@ do_usage(const char *name, int status)
 	fprintf(stderr, "  %s -V\n", name);
 	fprintf(stderr, "  %s [options]\n", name);
 	fprintf(stderr, "Options:\n");
+	fprintf(stderr, "  -m, --method"
+									" Select implementation to use to generate the image.\n");
 	fprintf(stderr, "  -r, --resolution "
 	                " Set bitmap resolution to WxH pixels.\n");
 	fprintf(stderr, "  -c, --center     "
@@ -137,6 +145,8 @@ do_usage(const char *name, int status)
 	                " Change the width of the spanned region.\n");
 	fprintf(stderr, "  -H, --height     "
 	                " Change the height of the spanned region.\n");
+	fprintf(stderr, "  -s, --seed       "
+	                " Set complex value of the seed used to generate the fractal.\n");
 	fprintf(stderr, "  -o, --output     "
 	                " Path to output file.\n");
 	fprintf(stderr, "Examples:\n");
@@ -259,6 +269,33 @@ do_center(const char *name, const char *spec)
 	upper_left_im = im + height / 2;
 	lower_right_re = re + width / 2;
 	lower_right_im = im - height / 2;
+}
+
+static void
+do_seed(const char *name, const char *spec)
+{
+	double re, im;
+	char ii;
+	char sg;
+	char ch;
+
+	if (sscanf(spec,
+	           "%lf %c %lf %c %c",
+	           &re,
+	           &sg,
+	           &im,
+	           &ii,
+	           &ch) != 4
+	    || !PLUS_OR_MINUS(sg)
+	    || !IMAGINARY_UNIT(ii)) {
+		fprintf(stderr, "invalid seed specification.\n");
+		exit(1);
+	}
+
+	im *= SIGN(sg);
+
+	seed_re = re;
+	seed_im = im;
 }
 
 static void

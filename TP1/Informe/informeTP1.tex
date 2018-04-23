@@ -7,7 +7,10 @@
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{bookmark}
+\usepackage{courier}
 \usepackage[nocolor]{drawstack}
+\usepackage{subfig}
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
 \graphicspath{/imagenes,/Casos de prueba}
 
 \title{		\textbf{Trabajo Práctico 1: \\
@@ -186,110 +189,33 @@ El stack frame se muestra a continuación. Por la misma razón que en la funció
 	\finishframe{SRA}
 \end{drawstack}
 \end{center}
-%\section{Pruebas}
-%
-%Para las pruebas compilamos el programa con gcc de la siguiente manera:
-%
-%\begin{lstlisting}[frame=single]
-%$gcc main.c -o tp0
-%\end{lstlisting}
-%Luego corremos el archivo \textbf{test.sh}.
-%Ya que las pruebas son sobre las imágenes, las vamos a realizar a ojo comparandolas con las del enunciado y con las obtenidas en un generador online (\url{http://usefuljs.net/fractals/}).
-%
-%Cabe destacar que las imagenes del generador tienen mayor rango dinamico que las del enunciado y nosotros decidimos generarlas como en \'{e}ste \'{u}ltimo.
-%
-%Las imagenes obtenidas por nuestro trabajo se encuentran tambi\'{e}n en formato PNG en la subcarpeta \textit{imagenes}.
-%A su vez las imagenes del generador online se encuentran en \textit{Casos de prueba}.
-%
-%\subsection{Caso con los valores por defecto}
-%Se obtiene una imagen como la primera figura del enunciado:
-%
-%\begin{lstlisting}[frame=single]
-%$./tp0 -o uno.pgm
-%\end{lstlisting}
-%
-%\begin{figure}[H]
-%\begin{center}
-%\includegraphics[width=0.5\textwidth]{imagenes/uno.png}
-%\caption{} \label{uno}
-%\end{center}
+
+\section{Pruebas}
+Como estamos probando imagenes, las pruebas las realizamos a ojo, comparandolas con las imagenes provistas como ejemplo en el enunciado y otras obtenidas con un generador online (\url{http://usefuljs.net/fractals/}). \\
+Las imagenes de prueba se generaron corriendo el archivo \textbf{test.sh}, pero en las siguientes subsecciones se mostrará el código que genera cada imagen. Además se compararán los resultados obtenidos por el método genérico (usando la función \textit{c\_plot}) y el método MIPS32 (usando la función \textit{mips32\_plot} escrita en assembly para este TP).
+
+%\subsubsection{Parámetros por defecto}
+%Esta prueba se realizó para verificar que la imagen obtenida sin pasar parámetros en la linea de comandos es la correcta.
+%\begin{figure}
+% \centering
+%  \subfloat[Genérico]{
+%    \includegraphics[width=0.5\textwidth]{../img_informe/gen1.pdf}}
+%  \subfloat[MIPS32]{
+%    \includegraphics[width=0.5\textwidth]{../img_informe/gen2.pdf}}
+% \caption{Pruebas por defecto}
 %\end{figure}
-%
-%\newpage
-%
-%\subsection{Caso de imagen con zoom y otro centro}
-%Se obtiene una imagen como la segunda figura del enunciado:
-%
-%\begin{lstlisting}[frame=single]
-%$ ./tp0 -c 0.282-0.007i -w 0.005 -H 0.005 -o dos.pgm
-%\end{lstlisting}
-%
-%\begin{figure}[H]
-%\begin{center}
-%\includegraphics[width=0.5\textwidth]{imagenes/dos.png}
-%\caption{} \label{dos}
-%\end{center}
-%\end{figure}
-%
-%\subsection{Caso de imagen con ancho 1 y centro 1}
-%Se obtiene una imagen como la primera del enunciado pero con un zoom x2 aplicado:
-%
-%\begin{lstlisting}[frame=single]
-%$ ./tp0 -w 1 -H 1 -o tres.pgm
-%\end{lstlisting}
-%
-%\begin{figure}[H]
-%\begin{center}
-%\includegraphics[width=0.5\textwidth]{imagenes/tres.png}
-%\caption{} \label{tres}
-%\end{center}
-%\end{figure}
-%
-%\newpage
-%
-%\subsection{Caso de imagen muy chica}
-%
-%Imprimimos una imagen de 8x6 para que se puedan notar claramente los pixeles en la pantalla.
-%
-%\begin{lstlisting}[frame=single]
-%$ ./tp0 -r 8x6 -o cuatro.pgm
-%\end{lstlisting}
-%
-%\begin{figure}[H]
-%\begin{center}
-%\includegraphics[width=0.5\textwidth]{imagenes/cuatro.png}
-%\caption{} \label{cuatro}
-%\end{center}
-%\end{figure}
-%
-%\subsection{Caso de imagen con otra semilla}
-%
-%Esta imagen usa una semilla con sus dos componentes negativas y la imaginaria mucho mas grande que la real.
-%\begin{lstlisting}[frame=single]
-%$ ./tp0 -s -0.157-1.041i -o cinco.pgm
-%\end{lstlisting}
-%
-%\begin{figure}[H]
-%\begin{center}
-%\includegraphics[width=0.5\textwidth]{imagenes/cinco.png}
-%\caption{} \label{cinco}
-%\end{center}
-%\end{figure}
-%
-%\newpage
-%
-%\subsection{Caso de imagen muy angosta}
-%En este caso cambiamos la resolucion para obtener una imagen de un pixel
-%de alto y 800 de ancho. \newline
-%Es dif\'{i}cil observarla en el informe por lo que decidimos no colocarla. Sin embargo el archivo se encuentra en la misma carpeta del TP con el nombre \textit{seis.pgm}.
-%
-%\begin{lstlisting}[frame=single]
-%$ ./tp0 -r 800x1 -o seis.pgm
-%\end{lstlisting}
+
+\section{Compilación}
+
+Como hay un archivo \textit{Makefile} que realiza la compilación, el único comando que hay que escribir en la terminal para compilarlo es:
+
+\begin{lstlisting}[frame = single, language = bash, numbers=none]
+$ make
+\end{lstlisting}
 
 \section{Código S}
 
-En esta sección se muestra el código 
+En esta sección se muestra el código de la función mips32\_plot.
 
 \lstinputlisting[basicstyle=\ttfamily\scriptsize,breaklines=true]{../mips32_plot.S}
 
