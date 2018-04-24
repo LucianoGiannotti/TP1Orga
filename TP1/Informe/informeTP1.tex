@@ -192,18 +192,84 @@ El stack frame se muestra a continuación. Por la misma razón que en la funció
 
 \section{Pruebas}
 Como estamos probando imagenes, las pruebas las realizamos a ojo, comparandolas con las imagenes provistas como ejemplo en el enunciado y otras obtenidas con un generador online (\url{http://usefuljs.net/fractals/}). \\
-Las imagenes de prueba se generaron corriendo el archivo \textbf{test.sh}, pero en las siguientes subsecciones se mostrará el código que genera cada imagen. Además se compararán los resultados obtenidos por el método genérico (usando la función \textit{c\_plot}) y el método MIPS32 (usando la función \textit{mips32\_plot} escrita en assembly para este TP).
+Las imagenes de prueba se generaron corriendo el archivo \textbf{test.sh}. \\
+Como resultado de los test, las imagenes generadas por el método genérico y el método MIPS32, son exactamente iguales, ya que al compararlas con el comando \textit{diff}, no hay diferencias entre ellas. \\
+Los comandos mostrados en las siguientes subsecciones son para obtener las imágenes con el método MIPS32. Para obtener las imagenes con el método genérico únicamente hay que borrar el flag -m.
 
-%\subsubsection{Parámetros por defecto}
-%Esta prueba se realizó para verificar que la imagen obtenida sin pasar parámetros en la linea de comandos es la correcta.
-%\begin{figure}
-% \centering
-%  \subfloat[Genérico]{
-%    \includegraphics[width=0.5\textwidth]{../img_informe/gen1.pdf}}
-%  \subfloat[MIPS32]{
-%    \includegraphics[width=0.5\textwidth]{../img_informe/gen2.pdf}}
-% \caption{Pruebas por defecto}
-%\end{figure}
+\subsubsection{Parámetros por defecto}
+Esta prueba se realizó para verificar que la imagen obtenida sin pasar parámetros en la linea de comandos es la correcta. \\
+El comando para obtener la imagen mostrada a continuación es:
+
+\begin{lstlisting}[frame = single, language = bash, numbers=none]
+$ ./tp1 -o gen1.pgm -m mips32
+\end{lstlisting}
+
+\begin{figure}[H]
+ \centering
+    \includegraphics[width=0.5\textwidth]{../img_informe/uno.png}
+\end{figure}
+
+\subsubsection{Cambio de centro y zoom}
+Esta prueba se realizó para verificar que la imagen obtenida cambiando los parámetros de altura, ancho y centro es la correcta. \\
+El comando para obtener la imagen mostrada a continuación es:
+
+\begin{lstlisting}[frame = single, language = bash, numbers=none]
+$ ./tp1 -c 0.282-0.007i -w 0.005 -H 0.005 -o gen2.pgm -m mips32
+\end{lstlisting}
+
+\begin{figure}[H]
+ \centering
+    \includegraphics[width=0.5\textwidth]{../img_informe/dos.png}
+\end{figure}
+
+\subsubsection{Cambio de ancho y altura}
+Esta prueba se realizó para verificar que la imagen obtenida cambiando los parámetros de ancho y altura es la correcta. \\
+Se prueba nuevamente los parámetros de ancho y altura para probar si son independientes del parámetro de centro. \\
+El comando para obtener la imagen mostrada a continuación es:
+
+\begin{lstlisting}[frame = single, language = bash, numbers=none]
+$ ./tp1 -w 1 -H 1 -o gen3.pgm -m mips32
+\end{lstlisting}
+
+\begin{figure}[H]
+ \centering
+    \includegraphics[width=0.5\textwidth]{../img_informe/tres.png}
+\end{figure}
+
+\subsubsection{Cambio de resolución}
+Esta prueba se realizó para verificar que la imagen obtenida cambiando el parámetro de resolución es la correcta. \\
+El comando para obtener la imagen mostrada a continuación es:
+
+\begin{lstlisting}[frame = single, language = bash, numbers=none]
+$ ./tp1 -r 8x6 -o gen4.pgm -m mips32
+\end{lstlisting}
+
+\begin{figure}[H]
+ \centering
+    \includegraphics[width=0.5\textwidth]{../img_informe/cuatro.png}
+\end{figure}
+
+\subsubsection{Cambio de seed}
+Esta prueba se realizó para verificar que la imagen obtenida cambiando el parámetro de seed es la correcta. \\
+El comando para obtener la imagen mostrada a continuación es:
+
+\begin{lstlisting}[frame = single, language = bash, numbers=none]
+$ ./tp1 -0.157-1.041i -o gen5.pgm -m mips32
+\end{lstlisting}
+
+\begin{figure}[H]
+ \centering
+    \includegraphics[width=0.5\textwidth]{../img_informe/uno.png}
+\end{figure}
+
+\subsubsection{Caso extremo}
+Esta prueba se realizó para verificar que no ocurren problemas de dibujado en casos
+extremos. Es difícil observarla en el informe por lo que decidimos no colocarla. Sin embargo los archivos se encuentran en el directorio Pruebas dentro del directorio del TP con los nombres \textit{gen6.pgm} y \textit{mips6.pgm}.\\
+El comando para obtener las imagenes es:
+
+\begin{lstlisting}[frame = single, language = bash, numbers=none]
+$ -r 800x1 -o gen6.pgm -m mips32
+\end{lstlisting}
 
 \section{Compilación}
 
@@ -218,6 +284,8 @@ $ make
 En esta sección se muestra el código de la función mips32\_plot.
 
 \lstinputlisting[basicstyle=\ttfamily\scriptsize,breaklines=true]{../mips32_plot.S}
+
+\newpage
 
 \section{Bibliografía}
 \begin{enumerate}
