@@ -50,6 +50,72 @@ El formato a usar es  PGM o \textit{portable gray format}, que resulta \'{u}til 
 Una vez recibidos los par\'{a}metros, para dibujar el Julia Set el programa obtiene de cada p\'{i}xel de la ventana a un punto en el plano complejo.
 A ese punto se lo eleva al cuadrado y le suma la semilla mencionada en la secci\'{o}n anterior. Esto se repite hasta que el valor absoluto del resultado sea menor a 2, en cuyo caso se toma la cantidad de iteraciones y se imprime en el archivo PGM, representando el nivel de blanco de ese pi\'{i}xel.
 
+Implementamos la clase \textbf{complex} para representar los numeros complejos.
+
+Tambi\'{e}n implementamos las siguientes funciones dentro del main.c para dibujar los conjuntos:
+
+
+\begin{lstlisting}[frame=single]
+complex addComplexNumbers(complex a,complex b)
+\end{lstlisting}
+Suma dos n\'{u}meros complejos.
+\newline
+
+\begin{lstlisting}[frame=single]
+complex sqrComplex(complex a)
+\end{lstlisting}
+Calcula la ra\'{i}z cuadrada de un n\'{u}mero complejo.
+\newline
+
+\begin{lstlisting}[frame=single]
+double absComplex(complex a)
+\end{lstlisting}
+Calcula el valor absoluto de un complejo.
+\newline
+
+
+\begin{lstlisting}[frame=single]
+int isValidNumber(char* arg)
+\end{lstlisting}
+Verifica que los valores ingresados para el ancho y el alto de la imagen sean v\'{a}lidos.
+De ser as\'{i} devuelve 1, caso contrario devuelve 0.
+\newline
+
+\begin{lstlisting}[frame=single]
+int isValidRes(char* arg) 
+\end{lstlisting}
+Verifica que el valor ingresado para la resoluci\'{o}n sea v\'{a}lido.
+De ser as\'{i} devuelve 1, caso contrario devuelve 0.
+\newline
+
+\begin{lstlisting}[frame=single]
+int isValidComplex(char* arg)
+\end{lstlisting}
+Verifica que el valor ingresado para el centro sea v\'{a}lido.
+De ser as\'{i} devuelve 1, caso contrario devuelve 0.
+\newline
+
+
+\begin{lstlisting}[frame=single]
+int processImage(int resW, int resH,
+                 complex pPos, complex seed,
+                 double w, double h,
+                 FILE* im, int N)
+\end{lstlisting}
+Contiene la l\'{o}gica del dibujo de los sets. Recibe el alto y ancho de la misma, el centro, la semilla, la resoluci\'{o}n y la cantidad de iteraciones m\'{a}ximas.
+Cada p\'{i}xel dentro de la resoluc\'{i}on ingresada es uno por uno transformado a n\'{u}meros complejos teniendo en cuenta el ancho y alto y el centro y se procesa el nivel en la escala de grises correspondiente a ese p\'{i}xel como se explica al principio de la secci\'{o}n.
+Estos niveles se escriben en un buffer y luego en un archivo siguiendo el formato PGM.
+La funci\'{o}n retorna -1 si ocurri\'{o} alg\'{u}n error.
+\newline
+
+
+
+
+
+El programa se compila con el siguiente comando:
+\begin{lstlisting}[frame=single]
+$gcc main.c -o tp0 -lm -std=gnu99
+\end{lstlisting}
 
 \section{C\'{o}digo C}
 
@@ -105,7 +171,8 @@ $ ./tp0 -c 0.282-0.007i -w 0.005 -H 0.005 -o dos.pgm
 \end{figure}
 
 \subsection{Caso de imagen con ancho 1 y centro 1}
-Se obtiene una imagen como la primera del enunciado pero con un zoom x2 aplicado:
+Se obtiene una imagen como la primera del enunciado pero con un zoom x2 aplicado.
+Realizamos esta prueba por ser un caso muy facil de reproducir y comprarar con otro generador de Julia Sets.
 
 \begin{lstlisting}[frame=single]
 $ ./tp0 -w 1 -H 1 -o tres.pgm
@@ -122,7 +189,7 @@ $ ./tp0 -w 1 -H 1 -o tres.pgm
 
 \subsection{Caso de imagen muy chica}
 
-Imprimimos una imagen de 8x6 para que se puedan notar claramente los pixeles en la pantalla.
+Imprimimos una imagen de 8x6 para que se puedan notar claramente los pixeles en la pantalla al hacer zoom con GIMP.
 
 \begin{lstlisting}[frame=single]
 $ ./tp0 -r 8x6 -o cuatro.pgm
@@ -138,6 +205,7 @@ $ ./tp0 -r 8x6 -o cuatro.pgm
 \subsection{Caso de imagen con otra semilla}
 
 Esta imagen usa una semilla con sus dos componentes negativas y la imaginaria mucho mas grande que la real.
+Esto es para comprobar que el centrado funcione correctamente, mas alla del caso del enunciado.
 \begin{lstlisting}[frame=single]
 $ ./tp0 -s -0.157-1.041i -o cinco.pgm
 \end{lstlisting}
@@ -154,6 +222,7 @@ $ ./tp0 -s -0.157-1.041i -o cinco.pgm
 \subsection{Caso de imagen muy angosta}
 En este caso cambiamos la resolucion para obtener una imagen de un pixel
 de alto y 800 de ancho. \newline
+Esto se realizo para verificar que no ocurren problemas de dibujado en casos extremos.
 Es dif\'{i}cil observarla en el informe por lo que decidimos no colocarla. Sin embargo el archivo se encuentra en la misma carpeta del TP con el nombre \textit{seis.pgm}.
 
 \begin{lstlisting}[frame=single]
@@ -164,7 +233,7 @@ $ ./tp0 -r 800x1 -o seis.pgm
 
 En esta secci\'{o}n colocaremos el ci\'{o}digo assembly MIPS generado por NetBSD.
 
-\lstinputlisting[basicstyle=\ttfamily\scriptsize,breaklines=true]{main.s}
+%\lstinputlisting[basicstyle=\ttfamily\scriptsize,breaklines=true]{main.s}
 
 \section{Bibliograf\'{i}a}
 \begin{enumerate}
