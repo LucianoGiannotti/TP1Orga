@@ -40,8 +40,8 @@ Este Trabajo Pr\'{a}ctico tiene el fin de ayudarnos a familiarizarnos con las he
 
 \section{Programa}
 
-El software de este trabajo esta escrito en lenguaje C y permite dibujar \textbf{Julia Sets} o \textbf{Conjuntos de Julia} segun los par\'{a}metros que le pasamos por l\'{i}nea de comando.
-Estos parámetros son la region del plano complejo: delimitada por un centro, un ancho y un alto; una semilla que afectara el calculo para c\'{a}da pixel; la resoluci\'{o}n y la salida ya sea por pantalla o por archivo.
+El software de este trabajo est\'{a} escrito en lenguaje C y permite dibujar \textbf{Julia Sets} o \textbf{Conjuntos de Julia} segun los par\'{a}metros que le pasamos por l\'{i}nea de comando.
+Estos par\'{a}metros son la regi\'{o}n del plano complejo: delimitada por un centro, un ancho y un alto; una semilla que afectar\'{a} el c\'{a}lculo para cada pixel; la resoluci\'{o}n y la salida ya sea por pantalla o por archivo.
 El formato a usar es  PGM o \textit{portable gray format}, que resulta \'{u}til para describir im\'{a}genes digitales en escala de grises.
 
 
@@ -133,7 +133,7 @@ Para las pruebas compilamos el programa con gcc de la siguiente manera:
 $gcc main.c -o tp0
 \end{lstlisting}
 Luego corremos el archivo \textbf{test.sh}.
-Ya que las pruebas son sobre las imágenes, las vamos a realizar a ojo comparandolas con las del enunciado y con las obtenidas en un generador online (\url{http://usefuljs.net/fractals/}).
+Ya que las pruebas son sobre las im\'{a}genes, las vamos a realizar a ojo comparandolas con las del enunciado y con las obtenidas en un generador online (\url{http://usefuljs.net/fractals/}).
 
 Cabe destacar que las imagenes del generador tienen mayor rango dinamico que las del enunciado y nosotros decidimos generarlas como en \'{e}ste \'{u}ltimo.
 
@@ -231,9 +231,16 @@ $ ./tp0 -r 800x1 -o seis.pgm
 
 \section{C\'{o}digo S}
 
-En esta secci\'{o}n colocaremos el ci\'{o}digo assembly MIPS generado por NetBSD.
+En esta secci\'{o}n colocaremos el c\'{o}digo assembly MIPS generado por NetBSD. \\
+El c\'{o}digo se gener\'{o} con la siguiente comando:
 
-%\lstinputlisting[basicstyle=\ttfamily\scriptsize,breaklines=true]{main.s}
+\begin{lstlisting}[frame=single]
+$ gcc -std=gnu99 -Wall -O0 -S -mrnames main.c
+\end{lstlisting}
+
+\lstinputlisting[basicstyle=\ttfamily\scriptsize,breaklines=true]{main.s}
+
+\newpage
 
 \section{Bibliograf\'{i}a}
 \begin{enumerate}

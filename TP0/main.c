@@ -86,8 +86,11 @@ int processImage(int resW, int resH,
 
 int isValidNumber(char* arg) {
 	for(int i = 0; arg[i] != '\0'; i++) {
-        // CERO Y NUEVE RESPECTIVAMENTE
-		if((arg[i] < 48) || (arg[i] > 57)) {
+		if((arg[i] < '0') || (arg[i] > '9')) {
+			if(arg[i] == '.') {
+				if(i == 0 || arg[i + 1] == '\0') return 0;
+				continue;
+			}
 			return 0;
 		}
 	}
@@ -95,39 +98,51 @@ int isValidNumber(char* arg) {
 }
 
 int isValidRes(char* arg) {
+	int x = 0;
 	for(int i = 0; arg[i] != '\0'; i++) {
 		if(arg[i] < '0' || arg[i] > '9') {
 			if(arg[i] == 'x') {
 				if(i == 0 || arg[i+1] == '\0') return 0;
+				x = 1;
 				continue;
 			}
 			return 0;
 		}
 	}
-	return 1;
+	return x;
 }
 
 int isValidComplex(char* arg) {
+	int j = 0;
+	int sign = 0;
 	for(int i = 0; arg[i] != '\0'; i++) {
 		if(arg[i] < '0' || arg[i] > '9') {
-			if(arg[i] == 'i') {
+			if(arg[i] == '.') {
+				if(i == 0 || arg[i+1] == 'i' || arg[i+1] == '+') return 0;
+				continue;
+			}
+
+			else if(arg[i] == 'i') {
 				if(arg[i+1] != '\0') return 0;
+				j = sign;
 				continue;
 			}
 
 			else if(arg[i] == '+') {
-				if(arg[i+1] == '\0' || arg[i+1] == '-' || arg[i+1] == 'i') return 0;
+				if(arg[i+1] == '-' || arg[i+1] == 'i' || arg[i+1] == '.' || i == 0) return 0;
+				sign = 1;
 				continue;
 			}
 
 			else if(arg[i] == '-') {
-				if(arg[i+1] == '\0' || arg[i+1] == '+' || arg[i+1] == 'i') return 0;
+				if(arg[i+1] == '+' || arg[i+1] == '.' || arg[i+1] == 'i') return 0;
+				if(i != 0) sign = 1;
 				continue;
 			}
 			return 0;
 		}
 	}
-	return 1;
+	return j;
 }
 
 int main(int argc, char* argv[]){
@@ -303,6 +318,7 @@ Ejemplos:\n\
 				printf("Error: debe ingresar un archivo de salida\n");
 				return -1;
 			} else if (!strcmp(argv[i+1], "-")){
+				i++;
 				continue;
 			}
 			else {
